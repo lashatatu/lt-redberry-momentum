@@ -1,9 +1,13 @@
+import Header from "../Components/Header.jsx";
+import Menu from "../Components/Menu.jsx";
+
 function App() {
   return (
     <>
-      <h1 className={"rounded bg-blue-500 px-4 py-2 text-base text-white"}>
-        lasha
-      </h1>
+      <div className={'px-12 py-3'}>
+        <Header />
+        <Menu/>
+      </div>
     </>
   );
 }

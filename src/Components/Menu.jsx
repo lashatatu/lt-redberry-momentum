@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from "react";
 
 const Menu = () => {
@@ -123,12 +124,23 @@ const Menu = () => {
     fetchEmployees();
   }, []);
 
-  const toggleDropdown = (dropdown) => {
-    setOpenDropdowns((prev) => ({
-      ...prev,
-      [dropdown]: !prev[dropdown],
-    }));
-  };
+const toggleDropdown = (dropdown) => {
+  setOpenDropdowns((prev) => {
+    if (prev[dropdown]) {
+      return {
+        ...prev,
+        [dropdown]: false
+      };
+    }
+
+    return {
+      filter1: false,
+      filter2: false,
+      filter3: false,
+      [dropdown]: true
+    };
+  });
+};
 
   const toggleSelection = (dropdown, item) => {
     setSelectedItems((prev) => {
@@ -157,6 +169,7 @@ const Menu = () => {
         დავალებების გვერდი
       </h1>
 
+
       <div className="relative my-3 flex w-fit gap-[45px] rounded-lg border border-gray-300">
         <div className="relative">
           <button
@@ -168,18 +181,22 @@ const Menu = () => {
               {selectedItems.filter1.length > 0 &&
                 `(${selectedItems.filter1.length})`}
             </span>
-            <svg
-              className={`h-4 w-4 transition-transform ${openDropdowns.filter1 ? "rotate-180" : ""}`}
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <label className="swap">
+              <input type="checkbox" />
+              <svg
+                className={`h-4 w-4 transition-transform ${openDropdowns.filter1 ? "rotate-180" : ""}`}
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </label>
+
           </button>
         </div>
 
@@ -193,18 +210,22 @@ const Menu = () => {
               {selectedItems.filter2.length > 0 &&
                 `(${selectedItems.filter2.length})`}
             </span>
-            <svg
-              className={`h-4 w-4 transition-transform ${openDropdowns.filter2 ? "rotate-180" : ""}`}
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
+
+            <label className="swap">
+              <input type="checkbox" />
+              <svg
+                className={`h-4 w-4 transition-transform ${openDropdowns.filter2 ? "rotate-180" : ""}`}
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </label>
           </button>
         </div>
 
@@ -218,18 +239,21 @@ const Menu = () => {
               {selectedItems.filter3.length > 0 &&
                 `(${selectedItems.filter3.length})`}
             </span>
-            <svg
-              className={`h-4 w-4 transition-transform ${openDropdowns.filter3 ? "rotate-180" : ""}`}
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <label className="swap">
+              <input type="checkbox" />
+              <svg
+                className={`h-4 w-4 transition-transform ${openDropdowns.filter3 ? "rotate-180" : ""}`}
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </label>
           </button>
         </div>
 

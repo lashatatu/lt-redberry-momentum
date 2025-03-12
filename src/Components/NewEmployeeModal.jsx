@@ -197,7 +197,7 @@ const NewEmployeeModal = () => {
                           onClick={removeAvatar}
                           className="btn btn-circle btn-sm btn-error absolute -top-2 -right-2"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <img src={cancelModal} alt='' />
                         </button>
                       </div>
                     ) : (

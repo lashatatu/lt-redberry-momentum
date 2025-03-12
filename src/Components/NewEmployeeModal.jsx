@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import cancelModal from "../public/cancelModal.png";
+import removeEmployeeImage from "../public/removeEmployeeImage.png";
 
 const NewEmployeeModal = () => {
   const [formData, setFormData] = useState({
@@ -53,6 +54,25 @@ const NewEmployeeModal = () => {
     }));
   };
 
+  const handleCloseModal = () => {
+    document.getElementById("my_modal_7").checked = false;
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      surname: "",
+      department: "",
+      avatar: null,
+    });
+    setErrors({
+      name: "",
+      surname: "",
+      department: "",
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const nameError = validateField("name", formData.name);
@@ -85,7 +105,7 @@ const NewEmployeeModal = () => {
         <div className={"modal-box w-11/12 max-w-5xl"}>
           <div className={"flex-row"}>
             <div className="modal-action">
-              <label htmlFor="my_modal_7">
+              <label htmlFor="my_modal_7" onClick={resetForm}>
                 <img
                   src={cancelModal}
                   alt=""
@@ -195,9 +215,9 @@ const NewEmployeeModal = () => {
                         <button
                           type="button"
                           onClick={removeAvatar}
-                          className="btn btn-circle btn-sm btn-error absolute -top-2 -right-2"
+                          className="btn btn-circle btn-sm absolute -right-2 -bottom-2"
                         >
-                          <img src={cancelModal} alt='' />
+                          <img src={removeEmployeeImage} alt="" />
                         </button>
                       </div>
                     ) : (
@@ -226,7 +246,11 @@ const NewEmployeeModal = () => {
 
               <div className="modal-action">
                 <form method="dialog">
-                  <button type="button" className="btn mr-2">
+                  <button
+                    type="button"
+                    className="btn mr-2"
+                    onClick={handleCloseModal}
+                  >
                     გაუქმება
                   </button>
                 </form>
@@ -238,10 +262,14 @@ const NewEmployeeModal = () => {
           </div>
 
           <form method="dialog" className="modal-backdrop">
-            <button>close</button>
+            <button onClick={resetForm}>close</button>
           </form>
         </div>
-        <label className="modal-backdrop" htmlFor="my_modal_7">
+        <label
+          className="modal-backdrop"
+          htmlFor="my_modal_7"
+          onClick={resetForm}
+        >
           Close
         </label>
       </div>

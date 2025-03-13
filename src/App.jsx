@@ -2,16 +2,19 @@ import Header from "./Components/Header.jsx";
 import Menu from "./Components/Menu.jsx";
 import TaskList from "./Components/TaskList.jsx";
 import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
-    <>
-      <div className={'px-28 pt-7'}>
+    <QueryClientProvider client={queryClient}>
+      <div className={"px-28 pt-7"}>
         <Header />
-        <Menu/>
-        <TaskList/>
+        <Menu />
+        <TaskList />
       </div>
-    </>
+    </QueryClientProvider>
   );
 }
 

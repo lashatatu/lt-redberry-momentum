@@ -2,6 +2,11 @@ import React from "react";
 import { useState, useEffect } from "react";
 
 const Menu = () => {
+  const [departments, setDepartments] = useState([]);
+  const [priorities, setPriorities] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [showSelections, setShowSelections] = useState(false);
+
   const [openDropdowns, setOpenDropdowns] = useState({
     filter1: false,
     filter2: false,
@@ -13,10 +18,6 @@ const Menu = () => {
     filter2: [],
     filter3: [],
   });
-
-  const [departments, setDepartments] = useState([]);
-  const [priorities, setPriorities] = useState([]);
-  const [employees, setEmployees] = useState([]);
 
   const [isLoading, setIsLoading] = useState({
     departments: false,
@@ -124,23 +125,23 @@ const Menu = () => {
     fetchEmployees();
   }, []);
 
-const toggleDropdown = (dropdown) => {
-  setOpenDropdowns((prev) => {
-    if (prev[dropdown]) {
-      return {
-        ...prev,
-        [dropdown]: false
-      };
-    }
+  const toggleDropdown = (dropdown) => {
+    setOpenDropdowns((prev) => {
+      if (prev[dropdown]) {
+        return {
+          ...prev,
+          [dropdown]: false,
+        };
+      }
 
-    return {
-      filter1: false,
-      filter2: false,
-      filter3: false,
-      [dropdown]: true
-    };
-  });
-};
+      return {
+        filter1: false,
+        filter2: false,
+        filter3: false,
+        [dropdown]: true,
+      };
+    });
+  };
 
   const toggleSelection = (dropdown, item) => {
     setSelectedItems((prev) => {
@@ -161,6 +162,16 @@ const toggleDropdown = (dropdown) => {
 
   const handleSelection = (dropdown) => {
     toggleDropdown(dropdown);
+    setShowSelections(true);
+  };
+
+  const clearAllSelections = () => {
+    setSelectedItems({
+      filter1: [],
+      filter2: [],
+      filter3: [],
+    });
+    setShowSelections(false);
   };
 
   return (
@@ -169,34 +180,29 @@ const toggleDropdown = (dropdown) => {
         დავალებების გვერდი
       </h1>
 
-
-      <div className="relative my-3 flex w-fit gap-[45px] rounded-lg border border-gray-300">
+      <div className="relative my-3 flex w-fit gap-[45px] rounded-lg border border-[#DEE2E6] pr-2">
         <div className="relative">
           <button
             className="flex w-40 items-center justify-between rounded-md bg-white px-4 py-2"
             onClick={() => toggleDropdown("filter1")}
           >
-            <span>
-              დეპარტამენტი{" "}
-              {selectedItems.filter1.length > 0 &&
-                `(${selectedItems.filter1.length})`}
+            <span className={`${openDropdowns.filter1 ? "text-primary" : ""}`}>
+              დეპარტამენტი
             </span>
-            <label className="swap">
-              <input type="checkbox" />
+            <span>
               <svg
-                className={`h-4 w-4 transition-transform ${openDropdowns.filter1 ? "rotate-180" : ""}`}
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
+                className={`h-4 w-4 ${openDropdowns.filter1 ? "text-primary" : ""}`}
+                viewBox="0 0 24 24"
                 fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
               >
                 <path
                   fillRule="evenodd"
-                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                  clipRule="evenodd"
+                  d="M6.70711 8.29289C6.31658 7.90237 5.68342 7.90237 5.29289 8.29289C4.90237 8.68342 4.90237 9.31658 5.29289 9.70711L11.2929 15.7071C11.6834 16.0976 12.3166 16.0976 12.7071 15.7071L18.7071 9.70711C19.0976 9.31658 19.0976 8.68342 18.7071 8.29289C18.3166 7.90237 17.6834 7.90237 17.2929 8.29289L12 13.5858L6.70711 8.29289Z"
+                  fill="primary"
                 />
               </svg>
-            </label>
-
+            </span>
           </button>
         </div>
 
@@ -205,27 +211,24 @@ const toggleDropdown = (dropdown) => {
             className="flex w-40 items-center justify-between rounded-md bg-white px-4 py-2"
             onClick={() => toggleDropdown("filter2")}
           >
-            <span>
-              პრიორიტეტი{" "}
-              {selectedItems.filter2.length > 0 &&
-                `(${selectedItems.filter2.length})`}
+            <span className={`${openDropdowns.filter2 ? "text-primary" : ""}`}>
+              პრიორიტეტი
             </span>
 
-            <label className="swap">
-              <input type="checkbox" />
+            <span>
               <svg
-                className={`h-4 w-4 transition-transform ${openDropdowns.filter2 ? "rotate-180" : ""}`}
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
+                className={`h-4 w-4 ${openDropdowns.filter2 ? "text-primary" : ""}`}
+                viewBox="0 0 24 24"
                 fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
               >
                 <path
                   fillRule="evenodd"
-                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                  clipRule="evenodd"
+                  d="M6.70711 8.29289C6.31658 7.90237 5.68342 7.90237 5.29289 8.29289C4.90237 8.68342 4.90237 9.31658 5.29289 9.70711L11.2929 15.7071C11.6834 16.0976 12.3166 16.0976 12.7071 15.7071L18.7071 9.70711C19.0976 9.31658 19.0976 8.68342 18.7071 8.29289C18.3166 7.90237 17.6834 7.90237 17.2929 8.29289L12 13.5858L6.70711 8.29289Z"
+                  fill="primary"
                 />
               </svg>
-            </label>
+            </span>
           </button>
         </div>
 
@@ -234,31 +237,27 @@ const toggleDropdown = (dropdown) => {
             className="flex w-40 items-center justify-between rounded-md bg-white px-4 py-2"
             onClick={() => toggleDropdown("filter3")}
           >
-            <span>
-              თანამშრომელი{" "}
-              {selectedItems.filter3.length > 0 &&
-                `(${selectedItems.filter3.length})`}
+            <span className={`${openDropdowns.filter3 ? "text-primary" : ""}`}>
+              თანამშრომელი
             </span>
-            <label className="swap">
-              <input type="checkbox" />
+            <span>
               <svg
-                className={`h-4 w-4 transition-transform ${openDropdowns.filter3 ? "rotate-180" : ""}`}
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
+                className={`h-4 w-4 ${openDropdowns.filter3 ? "text-primary" : ""}`}
+                viewBox="0 0 24 24"
                 fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
               >
                 <path
                   fillRule="evenodd"
-                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                  clipRule="evenodd"
+                  d="M6.70711 8.29289C6.31658 7.90237 5.68342 7.90237 5.29289 8.29289C4.90237 8.68342 4.90237 9.31658 5.29289 9.70711L11.2929 15.7071C11.6834 16.0976 12.3166 16.0976 12.7071 15.7071L18.7071 9.70711C19.0976 9.31658 19.0976 8.68342 18.7071 8.29289C18.3166 7.90237 17.6834 7.90237 17.2929 8.29289L12 13.5858L6.70711 8.29289Z"
+                  fill="primary"
                 />
               </svg>
-            </label>
+            </span>
           </button>
         </div>
-
         {openDropdowns.filter1 && (
-          <div className="absolute left-0 top-full z-10 mt-2 w-full rounded-md border border-gray-300 bg-white shadow-lg">
+          <div className="border-primary absolute top-full left-0 z-10 mt-2 w-full rounded-md border bg-white shadow-lg">
             <div className="py-1">
               {isLoading.departments ? (
                 <div className="px-4 py-2 text-center">იტვირთება...</div>
@@ -300,7 +299,7 @@ const toggleDropdown = (dropdown) => {
                   </div>
                 ))
               )}
-              <div className="flex justify-end border-t border-gray-200 px-4 py-2">
+              <div className="flex justify-end px-4 py-2">
                 <button
                   onClick={() => handleSelection("filter1")}
                   className="w-32 rounded bg-[#8239EC] px-4 py-2 text-white hover:bg-[#6a2ec7]"
@@ -313,7 +312,7 @@ const toggleDropdown = (dropdown) => {
         )}
 
         {openDropdowns.filter2 && (
-          <div className="absolute left-0 top-full z-10 mt-2 w-full rounded-md border border-gray-300 bg-white shadow-lg">
+          <div className="border-primary absolute top-full left-0 z-10 mt-2 w-full rounded-md border bg-white shadow-lg">
             <div className="py-1">
               {isLoading.priorities ? (
                 <div className="px-4 py-2 text-center">იტვირთება...</div>
@@ -355,7 +354,7 @@ const toggleDropdown = (dropdown) => {
                   </div>
                 ))
               )}
-              <div className="flex justify-end border-t border-gray-200 px-4 py-2">
+              <div className="flex justify-end px-4 py-2">
                 <button
                   onClick={() => handleSelection("filter2")}
                   className="w-32 rounded bg-[#8239EC] px-4 py-2 text-white hover:bg-[#6a2ec7]"
@@ -368,7 +367,7 @@ const toggleDropdown = (dropdown) => {
         )}
 
         {openDropdowns.filter3 && (
-          <div className="absolute left-0 top-full z-10 mt-2 w-full rounded-md border border-gray-300 bg-white shadow-lg">
+          <div className="border-primary absolute top-full left-0 z-10 mt-2 w-full rounded-md border bg-white shadow-lg">
             <div className="py-1">
               {isLoading.employees ? (
                 <div className="px-4 py-2 text-center">იტვირთება...</div>
@@ -410,7 +409,7 @@ const toggleDropdown = (dropdown) => {
                   </div>
                 ))
               )}
-              <div className="flex justify-end border-t border-gray-200 px-4 py-2">
+              <div className="flex justify-end px-4 py-2">
                 <button
                   onClick={() => handleSelection("filter3")}
                   className="w-32 rounded bg-[#8239EC] px-4 py-2 text-white hover:bg-[#6a2ec7]"
@@ -421,6 +420,50 @@ const toggleDropdown = (dropdown) => {
             </div>
           </div>
         )}
+      </div>
+
+      <div className="my-3 flex flex-wrap gap-2">
+        {showSelections &&
+          Object.entries(selectedItems).map(([filter, items]) => {
+            if (items.length === 0) {
+              return null;
+            }
+            return items.map((item) => (
+              <div
+                key={`${filter}-${item}`}
+                className="flex items-center rounded-full border border-[#CED4DA] px-3 py-1 text-sm text-[#343A40]"
+              >
+                {item}
+                <button
+                  className="ml-2 text-gray-500 hover:text-gray-700"
+                  onClick={() => toggleSelection(filter, item)}
+                >
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            ));
+          })}
+        {showSelections &&
+          Object.values(selectedItems).some((items) => items.length > 0) && (
+            <button
+              onClick={clearAllSelections}
+              className="ml-2 rounded-full px-3 py-1 text-sm"
+            >
+              <span>გასუფთავება</span>
+            </button>
+          )}
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import React from "react";
 function App() {
   return (
     <>
-      <div className={'px-12 py-3'}>
+      <div className={'px-28 pt-7'}>
         <Header />
         <Menu/>
         <TaskList/>

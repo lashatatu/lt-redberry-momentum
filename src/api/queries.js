@@ -60,7 +60,6 @@ const fetchEmployees = async () => {
   return [];
 };
 
-// Custom query hooks
 export function useDepartmentsQuery() {
   return useQuery({
     queryKey: ['departments'],

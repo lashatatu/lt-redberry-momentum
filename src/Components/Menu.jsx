@@ -6,7 +6,7 @@ import {
   usePrioritiesQuery,
 } from "../api/queries.js";
 import DropDownItemComponent from "./DropDownItemComponent.jsx";
-import DropdownContent from "./DropDownFilterComponent.jsx";
+import DropDownFilterComponent from "./DropDownFilterComponent.jsx";
 
 const Menu = () => {
   const [openDropdowns, setOpenDropdowns] = useState({
@@ -114,7 +114,7 @@ const Menu = () => {
         />
 
         {openDropdowns.filter1 && (
-          <DropdownContent
+          <DropDownFilterComponent
             filterId="filter1"
             items={departments}
             isLoading={isDepartmentsLoading}
@@ -127,7 +127,7 @@ const Menu = () => {
         )}
 
         {openDropdowns.filter2 && (
-          <DropdownContent
+          <DropDownFilterComponent
             filterId="filter2"
             items={priorities}
             isLoading={isPrioritiesLoading}
@@ -140,7 +140,7 @@ const Menu = () => {
         )}
 
         {openDropdowns.filter3 && (
-          <DropdownContent
+          <DropDownFilterComponent
             filterId="filter3"
             items={employees}
             isLoading={isEmployeesLoading}

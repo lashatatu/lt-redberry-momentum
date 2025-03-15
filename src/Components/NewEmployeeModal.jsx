@@ -1,8 +1,18 @@
 import React, { useState } from "react";
 import cancelModal from "../public/cancelModal.png";
 import removeEmployeeImage from "../public/removeEmployeeImage.png";
+import imageLogo from "../public/imageLogo.png";
+import SelectComponent from "./SelectComponent.jsx";
+import { useDepartmentsQuery } from "../api/queries.js";
+import { useCreateEmployeeMutation } from "../api/mutations.js";
 
 const NewEmployeeModal = () => {
+  const {
+    data: departments = [],
+    isLoading: isDepartmentsLoading,
+    error: departmentsError,
+  } = useDepartmentsQuery();
+
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -16,15 +26,19 @@ const NewEmployeeModal = () => {
     department: "",
   });
 
-  const validateField = (name, value) => {
-    if (value.length < 2) {
-      return "მინიმუმ 2 სიმბოლო";
-    }
-    if (value.length > 255) {
-      return "მაქსიმუმ 255 სიმბოლო";
-    }
-    return "";
-  };
+const validateField = (name, value) => {
+  if (name === "department") {
+    return value ? "" : "აუცილებელი ველი";
+  }
+
+  if (value.length < 2) {
+    return "მინიმუმ 2 სიმბოლო";
+  }
+  if (value.length > 255) {
+    return "მაქსიმუმ 255 სიმბოლო";
+  }
+  return "";
+};
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -59,6 +73,8 @@ const NewEmployeeModal = () => {
     resetForm();
   };
 
+  const createEmployeeMutation = useCreateEmployeeMutation();
+
   const resetForm = () => {
     setFormData({
       name: "",
@@ -88,12 +104,20 @@ const NewEmployeeModal = () => {
       return;
     }
 
-    // Handle form submission
-    console.log("Form submitted:", formData);
+    createEmployeeMutation.mutate(formData, {
+      onSuccess: () => {
+        handleCloseModal();
+      },
+      onError: (error) => {
+        console.error("Error creating employee:", error);
+      }
+    });
   };
+
+
   return (
     <>
-      <label htmlFor="my_modal_7" className={"hover:cursor-pointer"}>
+      <label htmlFor="my_modal_7" className={"hover:cursor-pointer "}>
         თანამშრომლის შექმნა
       </label>
       <input
@@ -113,7 +137,7 @@ const NewEmployeeModal = () => {
                 />
               </label>
             </div>
-            <h3 className={"text-center text-[32px] font-bold"}>
+            <h3 className={"text-center text-[32px] font-bold text-[#212529] pb-[60px]"}>
               თანამშრომლის დამატება
             </h3>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -221,13 +245,21 @@ const NewEmployeeModal = () => {
                         </button>
                       </div>
                     ) : (
-                      <div className="space-y-2">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleFileChange}
-                          className="file-input file-input-bordered w-full max-w-md"
-                        />
+                      <div className="flex flex-col items-center justify-center space-y-2">
+                        <label className={"flex flex-col items-center"}>
+                          <img
+                            src={imageLogo}
+                            alt="Upload icon"
+                            className="mb-2 h-[28px] w-[34px]"
+                          />
+                          <p className={"text-[14px]"}>ატვირთე ფოტო</p>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            className="hidden"
+                          />
+                        </label>
                       </div>
                     )}
                   </div>
@@ -235,35 +267,43 @@ const NewEmployeeModal = () => {
               </div>
 
               <div className="w-1/2">
-                <div className="form-control w-full">
-                  <label className="label">
-                    <span className="label-text">
-                      დეპარტამენტი<span className="text-error">*</span>
-                    </span>
-                  </label>
-                </div>
+                <SelectComponent
+                  name="department"
+                  value={formData.department}
+                  onChange={handleChange}
+                  options={departments}
+                  isLoading={isDepartmentsLoading}
+                  error={departmentsError}
+                  label="დეპარტამენტი"
+                  required={true}
+                  placeholder=""
+                  errorMessage={errors.department}
+                />
               </div>
 
               <div className="modal-action">
-                <form method="dialog">
-                  <button
-                    type="button"
-                    className="btn mr-2"
-                    onClick={handleCloseModal}
-                  >
-                    გაუქმება
-                  </button>
-                </form>
-                <button type="submit" className="btn btn-primary">
+                <button
+                  type="button"
+                  className="btn mr-2"
+                  onClick={handleCloseModal}
+                >
+                  გაუქმება
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                >
                   დაამატე თანამშრომელი
                 </button>
               </div>
             </form>
           </div>
 
-          <form method="dialog" className="modal-backdrop">
-            <button onClick={resetForm}>close</button>
-          </form>
+          <div className="modal-backdrop">
+            <button type="button" onClick={resetForm}>
+              close
+            </button>
+          </div>
         </div>
         <label
           className="modal-backdrop"

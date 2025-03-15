@@ -24,6 +24,7 @@ const NewEmployeeModal = () => {
     name: "",
     surname: "",
     department: "",
+    avatar: ""
   });
 
 const validateField = (name, value) => {
@@ -36,6 +37,11 @@ const validateField = (name, value) => {
   }
   if (value.length > 255) {
     return "მაქსიმუმ 255 სიმბოლო";
+  }
+
+  const pattern = /^[a-zA-Zა-ჰ]+$/;
+  if (!pattern.test(value)) {
+    return "მხოლოდ ქართული და ინგლისური ასოები";
   }
   return "";
 };
@@ -54,9 +60,24 @@ const validateField = (name, value) => {
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setFormData((prev) => ({
+      const file = e.target.files[0];
+
+      if (file.size > 600 * 1024) {
+        setErrors(prev => ({
+          ...prev,
+          avatar: "ფაილის ზომა არ უნდა აღემატებოდეს 600KB-ს"
+        }));
+        return;
+      }
+
+      setErrors(prev => ({
         ...prev,
-        avatar: e.target.files[0],
+        avatar: ""
+      }));
+
+      setFormData(prev => ({
+        ...prev,
+        avatar: file
       }));
     }
   };
@@ -143,8 +164,8 @@ const validateField = (name, value) => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-2 gap-6">
                 <div className="form-control w-full">
-                  <label className="label">
-                    <span className="label-text">
+                  <label>
+                    <span className="label-text font-bold">
                       სახელი<span className="text-error">*</span>
                     </span>
                   </label>
@@ -155,7 +176,7 @@ const validateField = (name, value) => {
                     onChange={handleChange}
                     className={`input input-bordered w-full ${errors.name ? "input-error" : ""}`}
                   />
-                  <div className="mt-1 flex-row gap-2">
+                  <div className="mt-1 flex-row gap-2 text-[#6C757D]">
                     <div
                       className={` ${
                         formData.name.length > 0
@@ -182,8 +203,8 @@ const validateField = (name, value) => {
                 </div>
 
                 <div className="form-control w-full">
-                  <label className="label">
-                    <span className="label-text">
+                  <label>
+                    <span className="label-text font-bold">
                       გვარი<span className="text-error">*</span>
                     </span>
                   </label>
@@ -194,7 +215,7 @@ const validateField = (name, value) => {
                     onChange={handleChange}
                     className={`input input-bordered w-full ${errors.surname ? "input-error" : ""}`}
                   />
-                  <div className="mt-1 flex-row gap-2">
+                  <div className="mt-1 flex-row gap-2 text-[#6C757D]">
                     <div
                       className={` ${
                         formData.surname.length > 0
@@ -223,8 +244,8 @@ const validateField = (name, value) => {
 
               <div className="w-full">
                 <div className="form-control w-full">
-                  <label className="label">
-                    <span className="label-text">
+                  <label>
+                    <span className="label-text font-bold">
                       ავატარი<span className="text-error">*</span>
                     </span>
                   </label>
@@ -246,7 +267,7 @@ const validateField = (name, value) => {
                       </div>
                     ) : (
                       <div className="flex flex-col items-center justify-center space-y-2">
-                        <label className={"flex flex-col items-center"}>
+                        <label className={"flex flex-col items-center hover:cursor-pointer"}>
                           <img
                             src={imageLogo}
                             alt="Upload icon"
@@ -259,6 +280,9 @@ const validateField = (name, value) => {
                             onChange={handleFileChange}
                             className="hidden"
                           />
+                          {errors.avatar && (
+                            <div className="text-error text-sm mt-1">{errors.avatar}</div>
+                          )}
                         </label>
                       </div>
                     )}

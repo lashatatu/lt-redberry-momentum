@@ -18,8 +18,8 @@ const SelectComponent = ({
   return (
     <div className="form-control w-full">
       {label && (
-        <label className="label">
-          <span className="label-text">
+        <label>
+          <span className="label-text font-bold">
             {label}{required && <span className="text-error">*</span>}
           </span>
         </label>
@@ -47,7 +47,7 @@ const SelectComponent = ({
       </select>
 
       {errorMessage && (
-        <label className="label">
+        <label>
           <span className="label-text-alt text-error">{errorMessage}</span>
         </label>
       )}

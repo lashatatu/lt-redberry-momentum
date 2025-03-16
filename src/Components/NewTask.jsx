@@ -19,8 +19,6 @@ const NewTask = () => {
   const { data: statuses = [] } = useStatusesQuery();
   const {
     data: employees = [],
-    isLoading: isEmployeesLoading,
-    error: employeesError,
     refetch: refetchEmployees
   } = useEmployeesQuery();
   const createTaskMutation = useCreateTaskMutation();

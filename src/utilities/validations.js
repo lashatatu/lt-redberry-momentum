@@ -1,4 +1,3 @@
-// src/utilities/validations.js
   export const fieldValidations = {
     name: {
       validate: (value) => {
@@ -29,7 +28,6 @@
     },
     description: {
       validate: (value) => {
-        // Description is optional, only validate if there's a value
         return value.length > 0 && (value.length < 2 || value.length > 255);
       },
       rules: [
@@ -39,7 +37,6 @@
     }
   };
 
-  // For required select fields and date fields
   export const validateRequiredField = (value) => {
     return value ? "" : "აუცილებელი ველი";
   };

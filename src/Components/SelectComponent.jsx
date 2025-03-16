@@ -13,32 +13,36 @@ const SelectComponent = ({
   errorMessage,
   valueField = "id",
   labelField = "name",
-  className = "select-bordered w-full"
+  className = "select-bordered w-full",
+  disabled = false,
 }) => {
   return (
     <div className="form-control w-full">
       {label && (
         <label>
           <span className="label-text font-bold">
-            {label}{required && <span className="text-error">*</span>}
+            {label}
+            {required && <span className="text-error">*</span>}
           </span>
         </label>
       )}
 
       <select
         name={name}
-        value={value}
+        value={value || ""}
         onChange={onChange}
-        className={`select ${className} ${errorMessage ? "select-error" : ""}`}
-        disabled={isLoading}
+        className={`border rounded mt-2 p-2 ${className} ${errorMessage ? "select-error" : ""}`}
+        disabled={isLoading || disabled}
       >
-        <option value="" disabled>{placeholder}</option>
+        <option value="" disabled>
+          {placeholder}
+        </option>
         {isLoading ? (
           <option disabled>იტვირთება...</option>
         ) : error ? (
           <option disabled>შეცდომა მონაცემების ჩატვირთვისას</option>
         ) : (
-          options?.map(option => (
+          options?.map((option) => (
             <option key={option[valueField]} value={option[valueField]}>
               {option[labelField]}
             </option>

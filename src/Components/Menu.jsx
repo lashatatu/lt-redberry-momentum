@@ -109,7 +109,7 @@ const Menu = () => {
         <DropDownItem
           filterId={"filter3"}
           label={"თანამშრომელი"}
-          isOpen={openDropdowns.filter1}
+          isOpen={openDropdowns.filter3}
           onToggle={toggleDropdown}
         />
 

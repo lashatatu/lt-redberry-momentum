@@ -1,5 +1,6 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useStatusesQuery, useTasksQuery } from "../api/queries.js";
+import TaskCard from "./TaskCard.jsx";
 
 const taskColors = [
   {
@@ -21,66 +22,28 @@ const taskColors = [
 ];
 
 const TaskList = () => {
-  const [statuses, setStatuses] = useState([]);
-  const [isLoading, setIsLoading] = useState({
-    statuses: true,
-  });
-  const [error, setError] = useState({
-    statuses: null,
-  });
+  const {
+    data: statuses = [],
+    isLoading: isStatusesLoading,
+    error: statusesError,
+  } = useStatusesQuery();
 
-  useEffect(() => {
-    const fetchStatuses = async () => {
-      setIsLoading((prev) => ({
-        ...prev,
-        statuses: true,
-      }));
-      setError((prev) => ({
-        ...prev,
-        statuses: null,
-      }));
-      try {
-        const response = await fetch(
-          "https://momentum.redberryinternship.ge/api/statuses",
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch statuses");
-        }
-        const data = await response.json();
-        console.log("Status API response:", data);
+  const {
+    data: tasks = [],
+    isLoading: isTasksLoading,
+    error: tasksError,
+  } = useTasksQuery();
 
-        if (Array.isArray(data)) {
-          setStatuses(data);
-        } else if (data.data && Array.isArray(data.data)) {
-          setStatuses(data.data);
-        } else {
-          console.error("Unexpected statuses data structure:", data);
-          setStatuses([]);
-        }
-      } catch (err) {
-        setError((prev) => ({
-          ...prev,
-          statuses: err.message,
-        }));
-        console.error("Error fetching statuses:", err);
-      } finally {
-        setIsLoading((prev) => ({
-          ...prev,
-          statuses: false,
-        }));
-      }
-    };
-
-    fetchStatuses();
-  }, []);
+  const isLoading = isStatusesLoading || isTasksLoading;
+  const error = statusesError || tasksError;
 
   return (
     <div>
-      {isLoading.statuses ? (
+      {isLoading ? (
         <div className="py-4 text-center">იტვირთება...</div>
-      ) : error.statuses ? (
+      ) : error ? (
         <div className="py-4 text-center text-red-500">
-          შეცდომა: {error.statuses}
+          შეცდომა: {error.message}
         </div>
       ) : statuses.length === 0 ? (
         <div className="py-4 text-center">სტატუსები არ მოიძებნა</div>
@@ -102,6 +65,14 @@ const TaskList = () => {
           })}
         </div>
       )}
+
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {!isTasksLoading && tasks && tasks.length > 0 ? (
+          tasks.map((task) => <TaskCard key={task.id} task={task} />)
+        ) : (
+          <div>No tasks found</div>
+        )}
+      </div>
     </div>
   );
 };

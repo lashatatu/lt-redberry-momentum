@@ -77,6 +77,36 @@ const fetchEmployees = async () => {
   return [];
 };
 
+const fetchTasks = async () => {
+  const token = import.meta.env.VITE_BEARER;
+  const response = await fetch(
+    "https://momentum.redberryinternship.ge/api/tasks",
+    {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    }
+  );
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("Authentication required to fetch tasks");
+    }
+    throw new Error(`Failed to fetch tasks: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  if (Array.isArray(data)) return data;
+  if (data.data && Array.isArray(data.data)) return data.data;
+  if (data.tasks && Array.isArray(data.tasks)) return data.tasks;
+
+  console.error("Unexpected tasks data structure:", data);
+  return [];
+};
+
 export function useStatusesQuery() {
   return useQuery({
     queryKey: ['statuses'],
@@ -102,5 +132,10 @@ export function useEmployeesQuery() {
   return useQuery({
     queryKey: ['employees'],
     queryFn: fetchEmployees
+  });
+}export function useTasksQuery() {
+  return useQuery({
+    queryKey: ['tasks'],
+    queryFn: fetchTasks
   });
 }

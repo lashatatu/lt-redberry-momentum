@@ -1,17 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 
-const fetchDepartments = async () => {
+const fetchStatuses = async () => {
   const response = await fetch(
-    "https://momentum.redberryinternship.ge/api/departments"
+    "https://momentum.redberryinternship.ge/api/statuses"
   );
-  if (!response.ok) throw new Error("Failed to fetch departments");
+  if (!response.ok) throw new Error("Failed to fetch statuses");
   const data = await response.json();
 
   if (Array.isArray(data)) return data;
   if (data.data && Array.isArray(data.data)) return data.data;
-  if (data.departments && Array.isArray(data.departments)) return data.departments;
+  if (data.statuses && Array.isArray(data.statuses)) return data.statuses;
 
-  console.error("Unexpected departments data structure:", data);
+  console.error("Unexpected statuses data structure:", data);
   return [];
 };
 
@@ -29,6 +29,23 @@ const fetchPriorities = async () => {
   console.error("Unexpected priorities data structure:", data);
   return [];
 };
+
+
+const fetchDepartments = async () => {
+  const response = await fetch(
+    "https://momentum.redberryinternship.ge/api/departments"
+  );
+  if (!response.ok) throw new Error("Failed to fetch departments");
+  const data = await response.json();
+
+  if (Array.isArray(data)) return data;
+  if (data.data && Array.isArray(data.data)) return data.data;
+  if (data.departments && Array.isArray(data.departments)) return data.departments;
+
+  console.error("Unexpected departments data structure:", data);
+  return [];
+};
+
 
 const fetchEmployees = async () => {
   const token = import.meta.env.VITE_BEARER;
@@ -60,10 +77,10 @@ const fetchEmployees = async () => {
   return [];
 };
 
-export function useDepartmentsQuery() {
+export function useStatusesQuery() {
   return useQuery({
-    queryKey: ['departments'],
-    queryFn: fetchDepartments
+    queryKey: ['statuses'],
+    queryFn: fetchStatuses
   });
 }
 
@@ -71,6 +88,13 @@ export function usePrioritiesQuery() {
   return useQuery({
     queryKey: ['priorities'],
     queryFn: fetchPriorities
+  });
+}
+
+export function useDepartmentsQuery() {
+  return useQuery({
+    queryKey: ['departments'],
+    queryFn: fetchDepartments
   });
 }
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-const DropDownFilterComponent = ({
+const DropDownFilter = ({
   filterId,
   items = [],
   isLoading,
@@ -73,4 +73,4 @@ const DropDownFilterComponent = ({
   );
 };
 
-export default DropDownFilterComponent;
+export default DropDownFilter;

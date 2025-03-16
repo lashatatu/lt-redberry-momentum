@@ -27,24 +27,24 @@ const NewEmployeeModal = () => {
     avatar: ""
   });
 
-const validateField = (name, value) => {
-  if (name === "department") {
-    return value ? "" : "აუცილებელი ველი";
-  }
+  const validateField = (name, value) => {
+    if (name === "department") {
+      return value ? "" : "აუცილებელი ველი";
+    }
 
-  if (value.length < 2) {
-    return "მინიმუმ 2 სიმბოლო";
-  }
-  if (value.length > 255) {
-    return "მაქსიმუმ 255 სიმბოლო";
-  }
+    if (value.length < 2) {
+      return "მინიმუმ 2 სიმბოლო";
+    }
+    if (value.length > 255) {
+      return "მაქსიმუმ 255 სიმბოლო";
+    }
 
-  const pattern = /^[a-zA-Zა-ჰ]+$/;
-  if (!pattern.test(value)) {
-    return "მხოლოდ ქართული და ინგლისური ასოები";
-  }
-  return "";
-};
+    const pattern = /^[a-zA-Zა-ჰ]+$/;
+    if (!pattern.test(value)) {
+      return "მხოლოდ ქართული და ინგლისური ასოები";
+    }
+    return "";
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;

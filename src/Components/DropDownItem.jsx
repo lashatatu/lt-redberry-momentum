@@ -1,6 +1,6 @@
 import React from "react";
 
-const DropDownItemComponent = ({
+const DropDownItem = ({
   filterId,
   label,
   isOpen,
@@ -35,4 +35,4 @@ const DropDownItemComponent = ({
 };
 
 
-export default DropDownItemComponent;
+export default DropDownItem;

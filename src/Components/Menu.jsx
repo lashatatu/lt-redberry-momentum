@@ -5,8 +5,8 @@ import {
   useEmployeesQuery,
   usePrioritiesQuery,
 } from "../api/queries.js";
-import DropDownItemComponent from "./DropDownItemComponent.jsx";
-import DropDownFilterComponent from "./DropDownFilterComponent.jsx";
+import DropDownItem from "./DropDownItem.jsx";
+import DropDownFilter from "./DropDownFilter.jsx";
 
 const Menu = () => {
   const [openDropdowns, setOpenDropdowns] = useState({
@@ -94,19 +94,19 @@ const Menu = () => {
       </h1>
 
       <div className="relative my-3 flex w-fit gap-[45px] rounded-lg border border-[#DEE2E6] pr-2">
-        <DropDownItemComponent
+        <DropDownItem
           filterId={"filter1"}
           label={"დეპარტამენტი"}
           isOpen={openDropdowns.filter1}
           onToggle={toggleDropdown}
         />
-        <DropDownItemComponent
+        <DropDownItem
           filterId={"filter2"}
           label={"პრიორიტეტი"}
           isOpen={openDropdowns.filter2}
           onToggle={toggleDropdown}
         />
-        <DropDownItemComponent
+        <DropDownItem
           filterId={"filter3"}
           label={"თანამშრომელი"}
           isOpen={openDropdowns.filter1}
@@ -114,7 +114,7 @@ const Menu = () => {
         />
 
         {openDropdowns.filter1 && (
-          <DropDownFilterComponent
+          <DropDownFilter
             filterId="filter1"
             items={departments}
             isLoading={isDepartmentsLoading}
@@ -127,7 +127,7 @@ const Menu = () => {
         )}
 
         {openDropdowns.filter2 && (
-          <DropDownFilterComponent
+          <DropDownFilter
             filterId="filter2"
             items={priorities}
             isLoading={isPrioritiesLoading}
@@ -140,7 +140,7 @@ const Menu = () => {
         )}
 
         {openDropdowns.filter3 && (
-          <DropDownFilterComponent
+          <DropDownFilter
             filterId="filter3"
             items={employees}
             isLoading={isEmployeesLoading}

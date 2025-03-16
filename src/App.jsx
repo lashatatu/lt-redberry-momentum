@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NewTask from "./Components/NewTask.jsx";
 import TaskCard from "./Components/TaskCard.jsx";
+import TaskCardPage from "./Components/TaskCardPage.jsx";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,8 @@ function App() {
               }
             />
             <Route path="/new-task" element={<NewTask />} />
+            <Route path="/tasks/:id" element={<TaskCardPage />} />
+
           </Routes>
         </div>
       </BrowserRouter>

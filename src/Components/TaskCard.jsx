@@ -1,6 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const TaskCard = ({ task }) => {
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/tasks/${task.id}`);
+  };
+
   if (!task) {
     return (
       <div className="rounded-md border border-gray-200 p-4 shadow-sm">
@@ -26,7 +33,7 @@ const TaskCard = ({ task }) => {
   };
 
   return (
-    <div className="rounded-md border border-gray-200 p-4 shadow-sm">
+    <div className="cursor-pointer rounded-md border border-gray-200 p-4 shadow-sm" onClick={handleCardClick}>
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium">
@@ -40,17 +47,17 @@ const TaskCard = ({ task }) => {
           {task.due_date ? formatDate(task.due_date) : "No due date"}
         </span>
       </div>
+      <div className={"px-10"}>
+        <div className="mb-2">
+          <h3 className="text-lg font-bold">{task.name || "Untitled Task"}</h3>
+        </div>
 
-      <div className="mb-2">
-        <h3 className="text-lg font-bold">{task.name || "Untitled Task"}</h3>
+        <div className="mb-3">
+          <p className="text-sm text-gray-700">
+            {truncateDescription(task.description) || "No description"}
+          </p>
+        </div>
       </div>
-
-      <div className="mb-3">
-        <p className="text-sm text-gray-700">
-          {truncateDescription(task.description) || "No description"}
-        </p>
-      </div>
-
       <div className="flex items-center justify-between">
         <div>
           {task.employee?.avatar && (

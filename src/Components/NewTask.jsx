@@ -10,7 +10,6 @@ import { useCreateTaskMutation } from "../api/mutations";
 import { fieldValidations, validateRequiredField } from "../utilities/validations";
 
 import SelectComponent from "./SelectComponent.jsx";
-import NewEmployeeModal from "./NewEmployeeModal.jsx";
 
 const NewTask = () => {
   const navigate = useNavigate();

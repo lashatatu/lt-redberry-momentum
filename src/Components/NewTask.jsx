@@ -8,18 +8,27 @@ import {
 } from "../api/queries";
 import { useCreateTaskMutation } from "../api/mutations";
 import { fieldValidations, validateRequiredField } from "../utilities/validations";
+
 import SelectComponent from "./SelectComponent.jsx";
+import NewEmployeeModal from "./NewEmployeeModal.jsx";
 
 const NewTask = () => {
   const navigate = useNavigate();
   const { data: departments = [] } = useDepartmentsQuery();
   const { data: priorities = [] } = usePrioritiesQuery();
   const { data: statuses = [] } = useStatusesQuery();
-  const { data: employees = [] } = useEmployeesQuery();
+  const {
+    data: employees = [],
+    isLoading: isEmployeesLoading,
+    error: employeesError,
+    refetch: refetchEmployees
+  } = useEmployeesQuery();
   const createTaskMutation = useCreateTaskMutation();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [showNewEmployeeModal, setShowNewEmployeeModal] = useState(false);
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -71,6 +80,12 @@ const NewTask = () => {
       }
     }
   }, [priorities]);
+
+  useEffect(() => {
+    if (document.getElementById("my_modal_7")?.checked === false) {
+      refetchEmployees();
+    }
+  }, [document.getElementById("my_modal_7")?.checked]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -304,12 +319,19 @@ const NewTask = () => {
               <select
                 name="employee_id"
                 value={formData.employee_id}
-                onChange={handleChange}
+                onChange={(e) => {
+                  if (e.target.value === "new") {
+                    document.getElementById("my_modal_7").checked = true;
+                  } else {
+                    handleChange(e);
+                  }
+                }}
                 required
                 disabled={!formData.department_id}
                 className={`w-full rounded border p-2 ${errors.employee_id ? "border-error" : ""} ${!formData.department_id ? "bg-gray-200" : ""}`}
               >
                 <option value="">აირჩიეთ თანამშრომელი</option>
+                <option value="new" className="font-bold text-blue-600">+ ახალი თანამშრომელი</option>
                 {filteredEmployees.map((employee) => (
                   <option key={employee.id} value={employee.id}>
                     {employee.name} {employee.surname}

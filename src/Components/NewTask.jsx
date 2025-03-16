@@ -27,7 +27,6 @@ const NewTask = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [showNewEmployeeModal, setShowNewEmployeeModal] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",

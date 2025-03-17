@@ -33,29 +33,80 @@ const TaskCard = ({ task }) => {
   };
 
   return (
-    <div className="cursor-pointer rounded-md border border-gray-200 p-4 shadow-sm" onClick={handleCardClick}>
-      <div className="mb-2 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-medium">
-            {task.priority?.name || "No priority"}
-          </span>
-          <span className="text-sm text-gray-600">
-            {task.department?.name || "No department"}
-          </span>
+    <div
+      className={`cursor-pointer rounded-[15px] border ${
+        task.status?.name === "დასაწყები"
+          ? "border-[#F7BC30]"
+          : task.status?.name === "პროგრესში"
+            ? "border-[#FB5607]"
+            : task.status?.name === "მზად ტესტირებისთვის"
+              ? "border-[#FF006E]"
+              : task.status?.name === "დასრულებული"
+                ? "border-[#3A86FF]"
+                : ""
+      } h-[200px] p-2 flex-col justify-between`}
+      onClick={handleCardClick}
+    >
+      <div className="flex items-center justify-between text-[12px]">
+        <div className={"flex gap-[10px]"}>
+          <div
+            className={`flex items-center rounded-[4px] border p-[4px] font-semibold ${
+              task.priority?.name === "დაბალი"
+                ? "text-[#08A508]"
+                : task.priority?.name === "საშუალო"
+                  ? "text-[#FFBE0B]"
+                  : task.priority?.name === "მაღალი"
+                    ? "text-[#FA4D4D]"
+                    : ""
+            }`}
+          >
+            <img
+              src={task.priority?.icon}
+              alt=""
+              className={"w-[16px h-[18px]"}
+            />
+            <span>{task.priority?.name}</span>
+          </div>
+          <div
+            className={`rounded-[15px] p-[4px] text-white ${
+              task.department?.name === "ადმინისტრაციის დეპარტამენტი"
+                ? "bg-[#FF66A8]"
+                : task.department?.name === "ადამიანური რესურსების დეპარტამენტი"
+                  ? "bg-gray-400"
+                  : task.department?.name === "ფინანსების დეპარტამენტი"
+                    ? "bg-green-900"
+                    : task.department?.name ===
+                        "გაყიდვები და მარკეტინგის დეპარტამენტი"
+                      ? "bg-[#FD9A6A]"
+                      : task.department?.name === "ლოჯოსტიკის დეპარტამენტი"
+                        ? "bg-[#89B6FF]"
+                        : task.department?.name === "ტექნოლოგიების დეპარტამენტი"
+                          ? "bg-[#FFD86D]"
+                          : task.department?.name === "მედიის დეპარტამენტი"
+                            ? "bg-accent"
+                            : ""
+            }`}
+          >
+            {task.department?.name}
+          </div>
         </div>
-        <span className="text-sm text-gray-500">
+        <span className="text-gray-500">
           {task.due_date ? formatDate(task.due_date) : "No due date"}
         </span>
       </div>
-      <div className={"px-10"}>
-        <div className="mb-2">
-          <h3 className="text-lg font-bold">{task.name || "Untitled Task"}</h3>
-        </div>
+      <div className={"flex gap-[12px]"}>
+        <div className={"px-10"}>
+          <div className="mb-2">
+            <h3 className="text-lg font-bold">
+              {task.name || "Untitled Task"}
+            </h3>
+          </div>
 
-        <div className="mb-3">
-          <p className="text-sm text-gray-700">
-            {truncateDescription(task.description) || "No description"}
-          </p>
+          <div className="mb-3">
+            <p className="text-sm text-gray-700">
+              {truncateDescription(task.description) || "No description"}
+            </p>
+          </div>
         </div>
       </div>
       <div className="flex items-center justify-between">

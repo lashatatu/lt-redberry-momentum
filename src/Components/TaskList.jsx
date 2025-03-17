@@ -2,25 +2,6 @@ import React from "react";
 import { useStatusesQuery, useTasksQuery } from "../api/queries.js";
 import TaskCard from "./TaskCard.jsx";
 
-const taskColors = [
-  {
-    id: 1,
-    color: "#F7BC30",
-  },
-  {
-    id: 2,
-    color: "#FB5607",
-  },
-  {
-    id: 3,
-    color: "#FF006E",
-  },
-  {
-    id: 4,
-    color: "#3A86FF",
-  },
-];
-
 const TaskList = () => {
   const {
     data: statuses = [],
@@ -37,6 +18,17 @@ const TaskList = () => {
   const isLoading = isStatusesLoading || isTasksLoading;
   const error = statusesError || tasksError;
 
+  const tasksByStatus = tasks.reduce((acc, task) => {
+    const statusId = task.status?.id;
+    if (statusId) {
+      if (!acc[statusId]) {
+        acc[statusId] = [];
+      }
+      acc[statusId].push(task);
+    }
+    return acc;
+  }, {});
+
   return (
     <div>
       {isLoading ? (
@@ -48,31 +40,40 @@ const TaskList = () => {
       ) : statuses.length === 0 ? (
         <div className="py-4 text-center">სტატუსები არ მოიძებნა</div>
       ) : (
-        <div className="flex justify-between pt-8">
-          {statuses.map((status, index) => {
-            const colorObj = taskColors[index % taskColors.length];
-            return (
+        <div className="flex gap-4">
+          {statuses.map((status) => (
+            <div key={status.id} className="flex w-[381px] flex-col">
               <div
-                key={status.id}
-                className="w-[381px] rounded-md border border-gray-200 py-1.5"
-                style={{ backgroundColor: colorObj.color }}
+                className={`mb-4 rounded-md border border-gray-200 py-1.5 ${
+                  status.name === "დასაწყები"
+                    ? "bg-[#F7BC30]"
+                    : status.name === "პროგრესში"
+                      ? "bg-[#FB5607]"
+                      : status.name === "მზად ტესტირებისთვის"
+                        ? "bg-[#FF006E]"
+                        : status.name === "დასრულებული"
+                          ? "bg-[#3A86FF]"
+                          : ""
+                }`}
               >
                 <h3 className="px-2 text-center text-xl font-extrabold text-white">
                   {status.name}
                 </h3>
               </div>
-            );
-          })}
+
+              <div className="flex flex-col gap-4">
+                {tasksByStatus[status.id]?.map((task) => (
+                  <TaskCard key={task.id} task={task} />
+                )) || (
+                  <div className="py-4 text-center text-gray-400">
+                    ამ სტატუსში დავალებები არ არის
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       )}
-
-      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {!isTasksLoading && tasks && tasks.length > 0 ? (
-          tasks.map((task) => <TaskCard key={task.id} task={task} />)
-        ) : (
-          <div>No tasks found</div>
-        )}
-      </div>
     </div>
   );
 };

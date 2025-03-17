@@ -11,6 +11,8 @@ import { fieldValidations, validateRequiredField } from "../utilities/validation
 
 import SelectComponent from "./SelectComponent.jsx";
 
+
+
 const NewTask = () => {
   const navigate = useNavigate();
   const { data: departments = [] } = useDepartmentsQuery();
@@ -23,7 +25,6 @@ const NewTask = () => {
   const createTaskMutation = useCreateTaskMutation();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -156,8 +157,6 @@ const NewTask = () => {
 
       await createTaskMutation.mutateAsync(taskData);
 
-      setSubmitSuccess(true);
-
       setFormData({
         title: "",
         description: "",
@@ -191,7 +190,7 @@ const NewTask = () => {
       <form onSubmit={handleSubmit} className="mt-6 grid grid-cols-2 gap-40">
         <div>
           <div className="mb-4">
-            <label className="mb-2 block font-medium">
+            <label className="input__label">
               სათაური
               <span className="text-error">*</span>
             </label>
@@ -201,9 +200,9 @@ const NewTask = () => {
               value={formData.title}
               onChange={handleChange}
               required
-              className={`w-full rounded border p-2 ${errors.title ? "border-error" : ""}`}
+              className={`rounded__border ${errors.title ? "border-error" : ""}`}
             />
-            <div className="mt-1 flex-row gap-2 text-[#6C757D]">
+            <div className="validation__wrapper">
               <div
                 className={`${
                   formData.title.length > 0
@@ -230,15 +229,15 @@ const NewTask = () => {
           </div>
 
           <div className="mb-4">
-            <label className="mb-2 block font-medium">აღწერა</label>
+            <label className="input__label">აღწერა</label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className={`h-32 w-full rounded border p-2 ${errors.description ? "border-error" : ""}`}
+              className={`h-32 rounded__border ${errors.description ? "border-error" : ""}`}
             />
             {formData.description.length > 0 && (
-              <div className="mt-1 flex-row gap-2 text-[#6C757D]">
+              <div className="validation__wrapper">
                 <div
                   className={`${
                     formData.description.length < 2
@@ -306,7 +305,7 @@ const NewTask = () => {
             </div>
 
             <div className="mb-4">
-              <label className="mb-2 block font-medium">
+              <label className="input__label">
                 პასუხისმგებელი თანამშრომელი
                 <span className="text-error">*</span>
               </label>
@@ -322,7 +321,7 @@ const NewTask = () => {
                 }}
                 required
                 disabled={!formData.department_id}
-                className={`w-full rounded border p-2 ${errors.employee_id ? "border-error" : ""} ${!formData.department_id ? "bg-gray-200" : ""}`}
+                className={`rounded__border ${errors.employee_id ? "border-error" : ""} ${!formData.department_id ? "bg-gray-200" : ""}`}
               >
                 <option value="">აირჩიეთ თანამშრომელი</option>
                 <option value="new" className="font-bold text-blue-600">+ ახალი თანამშრომელი</option>
@@ -333,7 +332,7 @@ const NewTask = () => {
                 ))}
               </select>
               {errors.employee_id && formData.department_id && (
-                <div className="text-error mt-1 text-sm">
+                <div className="text__error">
                   {errors.employee_id}
                 </div>
               )}
@@ -341,7 +340,7 @@ const NewTask = () => {
           </div>
 
           <div className="mb-4">
-            <label className="mb-2 block font-medium">
+            <label className="input__label">
               დედლაინი
               <span className="text-error">*</span>
             </label>
@@ -352,10 +351,10 @@ const NewTask = () => {
               min={getNextDayDate()}
               onChange={handleChange}
               required
-              className={`w-full rounded border p-2 ${errors.deadline ? "border-error" : ""}`}
+              className={`rounded__border ${errors.deadline ? "border-error" : ""}`}
             />
             {errors.deadline && (
-              <div className="text-error mt-1 text-sm">{errors.deadline}</div>
+              <div className="text__error">{errors.deadline}</div>
             )}
           </div>
         </div>
@@ -366,7 +365,7 @@ const NewTask = () => {
             className="cursor-pointer rounded bg-blue-600 px-6 py-2 text-white"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "იგზავნება..." : "შენახვა"}
+            შენახვა
           </button>
         </div>
       </form>

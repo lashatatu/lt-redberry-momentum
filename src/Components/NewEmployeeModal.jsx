@@ -176,7 +176,7 @@ const NewEmployeeModal = () => {
                     onChange={handleChange}
                     className={`input input-bordered w-full ${errors.name ? "input-error" : ""}`}
                   />
-                  <div className="mt-1 flex-row gap-2 text-[#6C757D]">
+                  <div className="validation__wrapper">
                     <div
                       className={` ${
                         formData.name.length > 0
@@ -215,7 +215,7 @@ const NewEmployeeModal = () => {
                     onChange={handleChange}
                     className={`input input-bordered w-full ${errors.surname ? "input-error" : ""}`}
                   />
-                  <div className="mt-1 flex-row gap-2 text-[#6C757D]">
+                  <div className="validation__wrapper">
                     <div
                       className={` ${
                         formData.surname.length > 0

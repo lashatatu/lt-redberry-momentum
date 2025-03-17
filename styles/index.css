@@ -6,3 +6,19 @@
 	--color-primary: #8239EC;
 }
 @tailwind utilities;
+
+.rounded__border{
+	@apply w-full rounded border p-2
+}
+
+.validation__wrapper{
+	@apply mt-1 flex-row gap-2 text-[#6C757D]
+}
+
+.input__label{
+	@apply mb-2 block font-medium
+}
+
+.text__error{
+	@apply text-error mt-1 text-sm
+}

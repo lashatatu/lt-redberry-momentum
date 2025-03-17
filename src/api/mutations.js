@@ -1,5 +1,42 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+export const useAddCommentMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ taskId, text, parent_id }) => {
+      const token = import.meta.env.VITE_BEARER;
+      const payload = { text };
+
+      if (parent_id) {
+        payload.parent_id = parent_id;
+      }
+
+      const response = await fetch(
+        `https://momentum.redberryinternship.ge/api/tasks/${taskId}/comments`,
+        {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to add comment: ${response.status}`);
+      }
+
+      return await response.json();
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(['taskComments', variables.taskId]);
+    }
+  });
+};
+
 export const useUpdateTaskStatusMutation = () => {
   const queryClient = useQueryClient();
 

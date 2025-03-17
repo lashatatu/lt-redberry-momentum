@@ -141,6 +141,38 @@ export function useStatusesQuery() {
   });
 }
 
+const fetchTaskComments = async (taskId) => {
+  const token = import.meta.env.VITE_BEARER;
+  const response = await fetch(
+    `https://momentum.redberryinternship.ge/api/tasks/${taskId}/comments`,
+    {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    }
+  );
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("Authentication required to fetch comments");
+    }
+    throw new Error(`Failed to fetch comments: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  if (Array.isArray(data)) return data;
+  if (data.data && Array.isArray(data.data)) return data.data;
+  if (data.comments && Array.isArray(data.comments)) return data.comments;
+
+  console.error("Unexpected comments data structure:", data);
+  return [];
+};
+
+
+
 export function usePrioritiesQuery() {
   return useQuery({
     queryKey: ['priorities'],
@@ -167,11 +199,20 @@ export function useEmployeesQuery() {
     queryFn: fetchTasks
   });
 }
+
 export const useTaskQuery = (id) => {
   return useQuery({
     queryKey: ['task', id],
     queryFn: () => fetchTask(id),
     enabled: !!id
+  });
+};
+
+export const useTaskCommentsQuery = (taskId) => {
+  return useQuery({
+    queryKey: ['taskComments', taskId],
+    queryFn: () => fetchTaskComments(taskId),
+    enabled: !!taskId
   });
 };
 

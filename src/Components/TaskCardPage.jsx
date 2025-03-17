@@ -1,7 +1,8 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { useTaskQuery } from "../api/queries";
-import moment from "moment";
+import { format } from "date-fns";
+import { ka } from 'date-fns/locale';
 import pieChart from '../public/pieChartIcon.png'
 import userIcon from '../public/userIcon.png'
 import calendarIcon from '../public/calendarIcon.png'
@@ -9,11 +10,6 @@ import calendarIcon from '../public/calendarIcon.png'
 const TaskCardPage = () => {
   const { id } = useParams();
   const { data: task, isLoading, error } = useTaskQuery(id);
-
-  console.log("API Response:", {
-    task,
-    error,
-  });
   // დაბალი #08A508
   // საშუალო #FFBE0B
   // მაღალი #FA4D4D
@@ -26,6 +22,7 @@ const TaskCardPage = () => {
   if (!task) {
     return <div>Task not found</div>;
   }
+
   return (
     <div className="flex justify-between">
       <div className={"my-6"}>
@@ -112,7 +109,10 @@ const TaskCardPage = () => {
               </div>
 
               <div className="flex items-center h-10 font-semibold">
-                {task.due_date ? moment(task.due_date).format('dddd - DD/MM/YYYY') : "თარიღი არ არის მითითებული"}
+
+                {task.due_date ?
+                  format(new Date(task.due_date), "eee MM/dd/yyyy", { locale: ka })
+                  : "თარიღი არ არის მითითებული"}
               </div>
             </div>
           </div>

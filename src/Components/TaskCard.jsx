@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
+import { ka } from "date-fns/locale";
 
 const TaskCard = ({ task }) => {
   const navigate = useNavigate();
@@ -16,20 +18,16 @@ const TaskCard = ({ task }) => {
     );
   }
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("ka-GE", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
-
-  const truncateDescription = (text, maxLength = 100) => {
+  const truncateDescription = (text, maxLength) => {
     if (!text) {
       return "";
     }
-    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+
+    return text.length <= 100
+      ? text.slice(0, maxLength)
+      : text.length > maxLength
+        ? `${text.slice(0, maxLength)}...`
+        : text;
   };
 
   return (
@@ -44,7 +42,7 @@ const TaskCard = ({ task }) => {
               : task.status?.name === "დასრულებული"
                 ? "border-[#3A86FF]"
                 : ""
-      } h-[200px] p-2 flex-col justify-between`}
+      } h-[200px] flex-col justify-between p-2`}
       onClick={handleCardClick}
     >
       <div className="flex items-center justify-between text-[12px]">
@@ -87,11 +85,15 @@ const TaskCard = ({ task }) => {
                             : ""
             }`}
           >
-            {task.department?.name}
+            {truncateDescription(task.department?.name, 10)}
           </div>
         </div>
         <span className="text-gray-500">
-          {task.due_date ? formatDate(task.due_date) : "No due date"}
+          {task.due_date
+            ? format(new Date(task.due_date), "dd MMM, yyyy", {
+                locale: ka,
+              })
+            : "თარიღი არ არის მითითებული"}
         </span>
       </div>
       <div className={"flex gap-[12px]"}>
@@ -104,7 +106,7 @@ const TaskCard = ({ task }) => {
 
           <div className="mb-3">
             <p className="text-sm text-gray-700">
-              {truncateDescription(task.description) || "No description"}
+              {truncateDescription(task.description, 100)}
             </p>
           </div>
         </div>

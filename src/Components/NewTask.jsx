@@ -206,13 +206,13 @@ const NewTask = () => {
               <div
                 className={`${
                   formData.title.length > 0
-                    ? formData.title.length < 2
+                    ? formData.title.length < 3
                       ? "text-error"
                       : "text-success"
                     : ""
                 }`}
               >
-                √ მინიმუმ 2 სიმბოლო
+                √ მინიმუმ 3 სიმბოლო
               </div>
               <div
                 className={`${
@@ -245,7 +245,7 @@ const NewTask = () => {
                       : "text-success"
                   }`}
                 >
-                  √ მინიმუმ 2 სიმბოლო
+                  √ მინიმუმ 4 სიტყვა
                 </div>
                 <div
                   className={`${

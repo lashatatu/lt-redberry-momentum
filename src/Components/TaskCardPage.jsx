@@ -1,15 +1,35 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useTaskQuery } from "../api/queries";
+import { useTaskQuery, useStatusesQuery } from "../api/queries";
+import { useUpdateTaskStatusMutation } from "../api/mutations";
 import { format } from "date-fns";
-import { ka } from 'date-fns/locale';
-import pieChart from '../public/pieChartIcon.png'
-import userIcon from '../public/userIcon.png'
-import calendarIcon from '../public/calendarIcon.png'
+import { ka } from "date-fns/locale";
+import pieChart from "../public/pieChartIcon.png";
+import userIcon from "../public/userIcon.png";
+import calendarIcon from "../public/calendarIcon.png";
+import SelectComponent from "./SelectComponent.jsx";
 
 const TaskCardPage = () => {
   const { id } = useParams();
   const { data: task, isLoading, error } = useTaskQuery(id);
+  const { data: statuses, isLoading: isStatusesLoading, error: statusesError } = useStatusesQuery();
+  const [selectedStatus, setSelectedStatus] = useState(null);
+  const updateTaskStatusMutation = useUpdateTaskStatusMutation();
+  useEffect(() => {
+    if (task && task.status) {
+      setSelectedStatus(task.status.id);
+    }
+  }, [task]);
+
+  const handleStatusChange = (e) => {
+    const { value } = e.target;
+    setSelectedStatus(value);
+    updateTaskStatusMutation.mutate({
+      taskId: id,
+      statusId: value
+    });
+  };
+
   // დაბალი #08A508
   // საშუალო #FFBE0B
   // მაღალი #FA4D4D
@@ -80,38 +100,57 @@ const TaskCardPage = () => {
           </h1>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-6">
-              <div className="flex items-center gap-2 h-10">
-                <img src={pieChart} alt="" className="w-6 h-6" />
-                <div className="text-gray-600 font-semibold">სტატუსი</div>
+              <div className="flex h-10 items-center gap-2">
+                <img src={pieChart} alt="" className="h-6 w-6" />
+                <div className="font-semibold text-gray-600">სტატუსი</div>
               </div>
-              <div className="flex items-center gap-2 h-10">
-                <img src={userIcon} alt="" className="w-6 h-6" />
-                <div className="text-gray-600 font-semibold">თანამშრომელი</div>
+              <div className="flex h-10 items-center gap-2">
+                <img src={userIcon} alt="" className="h-6 w-6" />
+                <div className="font-semibold text-gray-600">თანამშრომელი</div>
               </div>
-              <div className="flex items-center gap-2 h-10">
-                <img src={calendarIcon} alt="" className="w-6 h-6" />
-                <div className="text-gray-600 font-semibold">დავალების ვადა</div>
+              <div className="flex h-10 items-center gap-2">
+                <img src={calendarIcon} alt="" className="h-6 w-6" />
+                <div className="font-semibold text-gray-600">
+                  დავალების ვადა
+                </div>
               </div>
             </div>
             <div className="space-y-6">
-              <div className="flex items-center h-10">
-                {"mzad testirebistvis"}
+              <div className="flex h-10 items-center">
+                <SelectComponent
+                  name="status"
+                  value={selectedStatus || task.status?.id}
+                  onChange={handleStatusChange}
+                  options={statuses || []}
+                  isLoading={isStatusesLoading || updateTaskStatusMutation.isLoading}
+                  error={statusesError}
+                  placeholder="აირჩიე სტატუსი"
+                />
               </div>
 
               <div className="h-10">
                 <div className="flex items-center gap-2">
-                  <img src={task.employee?.avatar} alt="" className="w-8 h-8 rounded-full" />
+                  <img
+                    src={task.employee?.avatar}
+                    alt=""
+                    className="h-8 w-8 rounded-full"
+                  />
                   <div>
-                    <div className="text-sm text-gray-600">{task.department?.name}</div>
-                    <div className="text-sm font-semibold">{task.employee?.name || "tanamshromlis saxeli"}</div>
+                    <div className="text-sm text-gray-600">
+                      {task.department?.name}
+                    </div>
+                    <div className="text-sm font-semibold">
+                      {task.employee?.name || "tanamshromlis saxeli"}
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center h-10 font-semibold">
-
-                {task.due_date ?
-                  format(new Date(task.due_date), "eee MM/dd/yyyy", { locale: ka })
+              <div className="flex h-10 items-center font-semibold">
+                {task.due_date
+                  ? format(new Date(task.due_date), "eee MM/dd/yyyy", {
+                      locale: ka,
+                    })
                   : "თარიღი არ არის მითითებული"}
               </div>
             </div>

@@ -1,12 +1,46 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+export const useUpdateTaskStatusMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ taskId, statusId }) => {
+      const token = import.meta.env.VITE_BEARER;
+
+      const response = await fetch(
+        `https://momentum.redberryinternship.ge/api/tasks/${taskId}`,
+        {
+          method: "PUT",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ status_id: statusId })
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Error: ${response.status}`);
+      }
+
+      return await response.json();
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['task', variables.taskId] });
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+    }
+  });
+};
+
 export const useCreateTaskMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (taskData) => {
       const token = import.meta.env.VITE_BEARER;
-      console.log("Making API request with token:", token ? "Token exists" : "No token");
+
 
       const response = await fetch(
         "https://momentum.redberryinternship.ge/api/tasks",
@@ -21,9 +55,6 @@ export const useCreateTaskMutation = () => {
         }
       );
 
-      // Log the full response for debugging
-      console.log("API Response status:", response.status);
-
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         console.error("API Error Response:", errorData);
@@ -33,7 +64,6 @@ export const useCreateTaskMutation = () => {
       return await response.json();
     },
     onSuccess: (data) => {
-      console.log("Mutation successful, invalidating queries");
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       return data;
     }

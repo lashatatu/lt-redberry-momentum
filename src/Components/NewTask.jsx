@@ -138,7 +138,6 @@ const NewTask = () => {
     });
 
     if (hasErrors) {
-      console.log("Validation errors:", newErrors);
       return;
     }
 
@@ -155,7 +154,6 @@ const NewTask = () => {
         due_date: formData.deadline
       };
 
-      console.log("Sending task data:", taskData);
       await createTaskMutation.mutateAsync(taskData);
 
       setSubmitSuccess(true);

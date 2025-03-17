@@ -1,8 +1,11 @@
 import React from "react";
 import { useStatusesQuery, useTasksQuery } from "../api/queries.js";
 import TaskCard from "./TaskCard.jsx";
+import { useFilters } from "../context/FilterContext";
 
 const TaskList = () => {
+  const { selectedItems } = useFilters();
+
   const {
     data: statuses = [],
     isLoading: isStatusesLoading,
@@ -18,7 +21,26 @@ const TaskList = () => {
   const isLoading = isStatusesLoading || isTasksLoading;
   const error = statusesError || tasksError;
 
-  const tasksByStatus = tasks.reduce((acc, task) => {
+  const filteredTasks = tasks.filter(task => {
+    if (selectedItems.filter1.length > 0 &&
+      (!task.department || !selectedItems.filter1.includes(task.department.name))) {
+      return false;
+    }
+
+    if (selectedItems.filter2.length > 0 &&
+      (!task.priority || !selectedItems.filter2.includes(task.priority.name))) {
+      return false;
+    }
+
+    if (selectedItems.filter3.length > 0 &&
+      (!task.employee || !selectedItems.filter3.includes(task.employee.name))) {
+      return false;
+    }
+
+    return true;
+  });
+
+  const tasksByStatus = filteredTasks.reduce((acc, task) => {
     const statusId = task.status?.id;
     if (statusId) {
       if (!acc[statusId]) {

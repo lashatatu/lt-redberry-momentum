@@ -7,6 +7,7 @@ import {
 } from "../api/queries.js";
 import DropDownItem from "./DropDownItem.jsx";
 import DropDownFilter from "./DropDownFilter.jsx";
+import { useFilters } from "../context/FilterContext";
 
 const Menu = () => {
   const [openDropdowns, setOpenDropdowns] = useState({
@@ -14,13 +15,9 @@ const Menu = () => {
     filter2: false,
     filter3: false,
   });
-
-  const [selectedItems, setSelectedItems] = useState({
-    filter1: [],
-    filter2: [],
-    filter3: [],
-  });
   const [showSelections, setShowSelections] = useState(false);
+
+  const { selectedItems, toggleSelection, clearAllSelections } = useFilters();
 
   const {
     data: departments = [],
@@ -33,11 +30,13 @@ const Menu = () => {
     isLoading: isPrioritiesLoading,
     error: prioritiesError,
   } = usePrioritiesQuery();
+
   const {
     data: employees = [],
     isLoading: isEmployeesLoading,
     error: employeesError,
   } = useEmployeesQuery();
+
   const toggleDropdown = (dropdown) => {
     setOpenDropdowns((prev) => {
       if (prev[dropdown]) {
@@ -56,34 +55,13 @@ const Menu = () => {
     });
   };
 
-  const toggleSelection = (dropdown, item) => {
-    setSelectedItems((prev) => {
-      const isSelected = prev[dropdown].includes(item);
-      if (isSelected) {
-        return {
-          ...prev,
-          [dropdown]: prev[dropdown].filter((i) => i !== item),
-        };
-      } else {
-        return {
-          ...prev,
-          [dropdown]: [...prev[dropdown], item],
-        };
-      }
-    });
-  };
-
   const handleSelection = (dropdown) => {
     toggleDropdown(dropdown);
     setShowSelections(true);
   };
 
-  const clearAllSelections = () => {
-    setSelectedItems({
-      filter1: [],
-      filter2: [],
-      filter3: [],
-    });
+  const handleClearAllSelections = () => {
+    clearAllSelections();
     setShowSelections(false);
   };
 
@@ -189,7 +167,7 @@ const Menu = () => {
         {showSelections &&
           Object.values(selectedItems).some((items) => items.length > 0) && (
             <button
-              onClick={clearAllSelections}
+              onClick={handleClearAllSelections}
               className="ml-2 rounded-full px-3 py-1 text-sm"
             >
               <span>გასუფთავება</span>

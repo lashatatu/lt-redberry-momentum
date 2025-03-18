@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   useDepartmentsQuery,
   useEmployeesQuery,
@@ -16,8 +15,18 @@ const Menu = () => {
     filter3: false,
   });
   const [showSelections, setShowSelections] = useState(false);
+  const filterRef = useRef(null);
 
   const { selectedItems, toggleSelection, clearAllSelections } = useFilters();
+
+  useEffect(() => {
+    const hasSelections = Object.values(selectedItems).some(
+      (items) => items.length > 0,
+    );
+    if (hasSelections) {
+      setShowSelections(true);
+    }
+  }, [selectedItems]);
 
   const {
     data: departments = [],
@@ -36,6 +45,23 @@ const Menu = () => {
     isLoading: isEmployeesLoading,
     error: employeesError,
   } = useEmployeesQuery();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setOpenDropdowns({
+          filter1: false,
+          filter2: false,
+          filter3: false,
+        });
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const toggleDropdown = (dropdown) => {
     setOpenDropdowns((prev) => {
@@ -71,7 +97,10 @@ const Menu = () => {
         დავალებების გვერდი
       </h1>
 
-      <div className="relative my-3 flex w-fit gap-[45px] rounded-lg border border-[#DEE2E6] pr-2">
+      <div
+        ref={filterRef}
+        className="relative my-3 flex w-fit gap-[45px] rounded-lg border border-[#DEE2E6] pr-2"
+      >
         <DropDownItem
           filterId={"filter1"}
           label={"დეპარტამენტი"}
@@ -127,6 +156,8 @@ const Menu = () => {
             toggleSelection={toggleSelection}
             handleSelection={handleSelection}
             emptyMessage="თანამშრომლები არ მოიძებნა"
+            isEmployee={true}
+            isSingleSelect={true}
           />
         )}
       </div>
@@ -137,32 +168,43 @@ const Menu = () => {
             if (items.length === 0) {
               return null;
             }
-            return items.map((item) => (
-              <div
-                key={`${filter}-${item}`}
-                className="flex items-center rounded-full border border-[#CED4DA] px-3 py-1 text-sm text-[#343A40]"
-              >
-                {item}
-                <button
-                  className="ml-2 text-gray-500 hover:text-gray-700"
-                  onClick={() => toggleSelection(filter, item)}
+
+            return items.map((item) => {
+              let displayText = item;
+              if (filter === "filter3") {
+                const employee = employees.find((emp) => emp.name === item);
+                if (employee) {
+                  displayText = `${employee.name} ${employee.surname}`;
+                }
+              }
+
+              return (
+                <div
+                  key={`${filter}-${item}`}
+                  className="flex items-center rounded-full border border-[#CED4DA] px-3 py-1 text-sm text-[#343A40]"
                 >
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                  {displayText}
+                  <button
+                    className="ml-2 text-gray-500 hover:text-gray-700"
+                    onClick={() => toggleSelection(filter, item)}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-            ));
+                    <svg
+                      className="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              );
+            });
           })}
         {showSelections &&
           Object.values(selectedItems).some((items) => items.length > 0) && (

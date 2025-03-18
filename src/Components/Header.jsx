@@ -4,7 +4,7 @@ import logo from "../public/logo.png";
       import { useNavigate } from "react-router-dom";
 
       const Header = () => {
-        const navigate = useNavigate();  // Move inside component
+        const navigate = useNavigate();
 
         return (
           <header className="flex items-center justify-between mb-7">

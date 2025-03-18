@@ -10,6 +10,8 @@ const DropDownFilter = ({
   handleSelection,
   emptyMessage,
   itemLabelField = "name",
+  isSingleSelect = false,
+  isEmployee = false,
 }) => {
   return (
     <div
@@ -33,7 +35,14 @@ const DropDownFilter = ({
               className={
                 "flex cursor-pointer items-center px-4 py-2 hover:bg-gray-100"
               }
-              onClick={() => toggleSelection(filterId, item[itemLabelField])}
+              onClick={() => {
+                if (isSingleSelect) {
+                  const value = item[itemLabelField];
+                  toggleSelection(filterId, value, true);
+                } else {
+                  toggleSelection(filterId, item[itemLabelField]);
+                }
+              }}
             >
               <div
                 className={`mr-2 flex h-4 w-4 items-center justify-center rounded border ${
@@ -52,9 +61,24 @@ const DropDownFilter = ({
                   </svg>
                 )}
               </div>
-              <span className="text-sm text-gray-700">
-                {item[itemLabelField]}
-              </span>
+              {isEmployee ? (
+                <div className="flex items-center">
+                  {item.avatar && (
+                    <img
+                      src={item.avatar}
+                      alt="Avatar"
+                      className="mr-2 h-6 w-6 rounded-full object-cover"
+                    />
+                  )}
+                  <span className="text-sm text-gray-700">
+                    {item.name} {item.surname}
+                  </span>
+                </div>
+              ) : (
+                <span className="text-sm text-gray-700">
+                  {item[itemLabelField]}
+                </span>
+              )}
             </div>
           ))
         )}

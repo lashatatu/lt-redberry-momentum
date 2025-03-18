@@ -180,7 +180,7 @@ const NewEmployeeModal = () => {
                     <div
                       className={` ${
                         formData.name.length > 0
-                          ? errors.name
+                          ? formData.name.length<2
                             ? "text-error"
                             : "text-success"
                           : ""
@@ -191,7 +191,7 @@ const NewEmployeeModal = () => {
                     <div
                       className={` ${
                         formData.name.length > 0
-                          ? errors.name
+                          ? formData.name.length >255
                             ? "text-error"
                             : "text-success"
                           : ""
@@ -219,7 +219,7 @@ const NewEmployeeModal = () => {
                     <div
                       className={` ${
                         formData.surname.length > 0
-                          ? errors.surname
+                          ? formData.surname.length<2
                             ? "text-error"
                             : "text-success"
                           : ""
@@ -230,7 +230,7 @@ const NewEmployeeModal = () => {
                     <div
                       className={` ${
                         formData.surname.length > 0
-                          ? errors.surname
+                          ? formData.surname.length >255
                             ? "text-error"
                             : "text-success"
                           : ""

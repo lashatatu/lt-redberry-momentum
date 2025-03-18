@@ -25,6 +25,7 @@ const NewTask = () => {
   const createTaskMutation = useCreateTaskMutation();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [wordCount, setWordCount] = useState(0);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -84,6 +85,11 @@ const NewTask = () => {
     }
   }, [document.getElementById("my_modal_7")?.checked]);
 
+  const countWords = (text) => {
+    if (!text || text.trim() === '') return 0;
+    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -91,7 +97,15 @@ const NewTask = () => {
       [name]: value,
     }));
 
-    if (["title", "description"].includes(name)) {
+    if (name === "description") {
+      const words = countWords(value);
+      setWordCount(words);
+
+      setErrors(prev => ({
+        ...prev,
+        [name]: value.trim() !== '' && words < 4,
+      }));
+    } else if (name === "title") {
       const hasError = fieldValidations[name]?.validate(value);
       setErrors(prev => ({
         ...prev,
@@ -119,9 +133,9 @@ const NewTask = () => {
 
     const newErrors = {};
 
-    ["title", "description"].forEach(key => {
-      newErrors[key] = fieldValidations[key].validate(formData[key]);
-    });
+    newErrors.title = fieldValidations.title.validate(formData.title);
+    const descriptionWords = countWords(formData.description);
+    newErrors.description = formData.description.trim() !== '' && descriptionWords < 4;
 
     ["priority_id", "status_id", "department_id", "employee_id", "deadline"].forEach(key => {
       newErrors[key] = validateRequiredField(formData[key]);
@@ -240,12 +254,12 @@ const NewTask = () => {
               <div className="validation__wrapper">
                 <div
                   className={`${
-                    formData.description.length < 2
+                    wordCount < 4
                       ? "text-error"
                       : "text-success"
                   }`}
                 >
-                  √ მინიმუმ 4 სიტყვა
+                  √ მინიმუმ 4 სიტყვა (ამჟამად: {wordCount})
                 </div>
                 <div
                   className={`${
@@ -362,10 +376,10 @@ const NewTask = () => {
         <div className="col-span-2 mt-4 flex justify-end">
           <button
             type="submit"
-            className="cursor-pointer rounded bg-blue-600 px-6 py-2 text-white"
+            className="cursor-pointer rounded-md bg-primary px-6 py-2 text-white"
             disabled={isSubmitting}
           >
-            შენახვა
+            დავალების შენახვა
           </button>
         </div>
       </form>

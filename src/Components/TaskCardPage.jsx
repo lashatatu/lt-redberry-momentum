@@ -256,7 +256,10 @@ const TaskCardPage = () => {
         <div className="mb-4 flex items-center">
           <span className="font-medium">კომენტარები</span>
           <span className="bg-primary ml-2 flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
-            {comments?.length || 0}
+            {comments?.reduce(
+              (total, comment) => total + 1 + comment.sub_comments?.length,
+              0,
+            )}
           </span>
         </div>
 
@@ -339,7 +342,6 @@ const TaskCardPage = () => {
                               </button>
                             </div>
                           </div>
-
                         </form>
                       </div>
                     )}
@@ -348,10 +350,7 @@ const TaskCardPage = () => {
                       comment.sub_comments.length > 0 && (
                         <div className="mt-3">
                           {comment.sub_comments.map((reply) => (
-                            <div
-                              key={reply.id}
-                              className="mt-3 ml-8"
-                            >
+                            <div key={reply.id} className="mt-3 ml-8">
                               <div className="flex gap-2">
                                 <img
                                   src={reply.author_avatar || userIcon}

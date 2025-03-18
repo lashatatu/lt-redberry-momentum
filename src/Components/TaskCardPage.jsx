@@ -214,7 +214,7 @@ const TaskCardPage = () => {
 
               <div className="flex h-10 items-center font-semibold">
                 {task.due_date
-                  ? format(new Date(task.due_date), "eee MM/dd/yyyy", {
+                  ? format(new Date(task.due_date), "eee - MM/dd/yyyy", {
                       locale: ka,
                     })
                   : "თარიღი არ არის მითითებული"}
@@ -224,9 +224,7 @@ const TaskCardPage = () => {
         </div>
       </div>
 
-      <div className="my-6 w-2/5 rounded-lg border p-4">
-        <h2 className="mb-4 text-xl font-semibold">კომენტარები</h2>
-
+      <div className="my-6 w-2/5 rounded-lg border border-[#DDD2FF] bg-[#F8F3FEA6] p-4">
         {isCommentsLoading && <p>Loading comments...</p>}
 
         {commentsError && (
@@ -236,22 +234,22 @@ const TaskCardPage = () => {
         )}
 
         <form onSubmit={handleAddComment} className="mb-6">
-          <div className="relative mb-4">
+          <div className="focus:ring-primary relative mb-4 rounded-lg bg-white pr-2 pb-2 focus:ring-2">
             <textarea
-              className="focus:ring-primary min-h-[100px] w-full resize-none rounded-lg border p-3 focus:ring-2 focus:outline-none"
+              className="min-h-[100px] w-full resize-none rounded-lg p-3 focus:outline-none"
               placeholder="დაწერე კომენტარი"
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
             />
-          </div>
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="bg-primary hover:bg-opacity-90 rounded-lg px-4 py-2 text-white transition-colors disabled:opacity-50"
-              disabled={!commentText.trim() || addCommentMutation.isLoading}
-            >
-              დააკომენტარე
-            </button>
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="bg-primary hover:bg-opacity-90 rounded-4xl px-4 py-2 text-white transition-colors disabled:opacity-50"
+                disabled={!commentText.trim() || addCommentMutation.isLoading}
+              >
+                დააკომენტარე
+              </button>
+            </div>
           </div>
         </form>
 
@@ -265,7 +263,7 @@ const TaskCardPage = () => {
         {comments && comments.length > 0 ? (
           <div className="space-y-4">
             {comments.map((comment) => (
-              <div key={comment.id} className="border-b pb-4">
+              <div key={comment.id} className="pb-4">
                 <div className="mb-2 flex gap-2">
                   <img
                     src={comment.author_avatar || userIcon}
@@ -289,16 +287,28 @@ const TaskCardPage = () => {
                     <div className="mt-2 flex justify-start">
                       <button
                         onClick={() => handleReplyClick(comment.id)}
-                        className="text-primary flex items-center gap-1 text-sm hover:underline cursor-pointer"
+                        className="text-primary flex cursor-pointer items-center gap-1 text-sm hover:underline"
                       >
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
                           <g clipPath="url(#clip0_8958_352)">
-                            <path d="M16.0007 13.9993H14.6673V11.9993C14.6673 8.66602 12.0007 5.99935 8.66732 5.99935H5.33398V4.66602H8.66732C12.734 4.66602 16.0007 7.93268 16.0007 11.9993V13.9993Z" fill="#8338EC"/>
-                            <path d="M2 5.33333L5.33333 8.66667V2L2 5.33333Z" fill="#8338EC"/>
+                            <path
+                              d="M16.0007 13.9993H14.6673V11.9993C14.6673 8.66602 12.0007 5.99935 8.66732 5.99935H5.33398V4.66602H8.66732C12.734 4.66602 16.0007 7.93268 16.0007 11.9993V13.9993Z"
+                              fill="#8338EC"
+                            />
+                            <path
+                              d="M2 5.33333L5.33333 8.66667V2L2 5.33333Z"
+                              fill="#8338EC"
+                            />
                           </g>
                           <defs>
                             <clipPath id="clip0_8958_352">
-                              <rect width="16" height="16" fill="white"/>
+                              <rect width="16" height="16" fill="white" />
                             </clipPath>
                           </defs>
                         </svg>
@@ -309,33 +319,27 @@ const TaskCardPage = () => {
                     {replyingTo === comment.id && (
                       <div className="border-primary mt-4 ml-8 border-l-2 pl-4">
                         <form onSubmit={handleAddReply}>
-                          <div className="relative mb-2">
+                          <div className="focus:ring-primary relative mb-4 rounded-lg bg-white pr-2 pb-2 focus:ring-2">
                             <textarea
-                              className="focus:ring-primary min-h-[80px] w-full resize-none rounded-lg border p-3 focus:ring-2 focus:outline-none"
-                              placeholder="დაწერე პასუხი..."
+                              className="min-h-[100px] w-full resize-none rounded-lg p-3 focus:outline-none"
+                              placeholder="უპასუხე კომენტარს"
                               value={replyText}
                               onChange={(e) => setReplyText(e.target.value)}
                             />
+                            <div className="flex justify-end gap-2">
+                              <button
+                                type="submit"
+                                className="bg-primary hover:bg-opacity-90 rounded-4xl px-4 py-2 text-white transition-colors disabled:opacity-50"
+                                disabled={
+                                  !replyText.trim() ||
+                                  addCommentMutation.isLoading
+                                }
+                              >
+                                პასუხი
+                              </button>
+                            </div>
                           </div>
-                          <div className="flex justify-end gap-2">
-                            <button
-                              type="button"
-                              className="rounded-lg border px-3 py-1 hover:bg-gray-50"
-                              onClick={() => setReplyingTo(null)}
-                            >
-                              გაუქმება
-                            </button>
-                            <button
-                              type="submit"
-                              className="bg-primary hover:bg-opacity-90 rounded-lg px-3 py-1 text-white disabled:opacity-50"
-                              disabled={
-                                !replyText.trim() ||
-                                addCommentMutation.isLoading
-                              }
-                            >
-                              პასუხი
-                            </button>
-                          </div>
+
                         </form>
                       </div>
                     )}
@@ -346,7 +350,7 @@ const TaskCardPage = () => {
                           {comment.sub_comments.map((reply) => (
                             <div
                               key={reply.id}
-                              className="mt-3 ml-8 border-l-2 border-gray-200 pl-4"
+                              className="mt-3 ml-8"
                             >
                               <div className="flex gap-2">
                                 <img

@@ -42,7 +42,7 @@ const TaskCard = ({ task }) => {
               : task.status?.name === "დასრულებული"
                 ? "border-[#3A86FF]"
                 : ""
-      } h-[200px] flex-col justify-between p-2`}
+      } h-[200px] flex flex-col justify-between p-2`}
       onClick={handleCardClick}
     >
       <div className="flex items-center justify-between text-[12px]">
@@ -97,7 +97,7 @@ const TaskCard = ({ task }) => {
         </span>
       </div>
       <div className={"flex gap-[12px]"}>
-        <div className={"px-10"}>
+        <div className={"px-5"}>
           <div className="mb-2">
             <h3 className="text-lg font-bold">
               {task.name || "Untitled Task"}

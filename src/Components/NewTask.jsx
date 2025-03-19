@@ -7,21 +7,20 @@ import {
   useEmployeesQuery,
 } from "../api/queries";
 import { useCreateTaskMutation } from "../api/mutations";
-import { fieldValidations, validateRequiredField } from "../utilities/validations";
+import {
+  fieldValidations,
+  validateRequiredField,
+} from "../utilities/validations";
 
 import SelectComponent from "./SelectComponent.jsx";
-
-
 
 const NewTask = () => {
   const navigate = useNavigate();
   const { data: departments = [] } = useDepartmentsQuery();
   const { data: priorities = [] } = usePrioritiesQuery();
   const { data: statuses = [] } = useStatusesQuery();
-  const {
-    data: employees = [],
-    refetch: refetchEmployees
-  } = useEmployeesQuery();
+  const { data: employees = [], refetch: refetchEmployees } =
+    useEmployeesQuery();
   const createTaskMutation = useCreateTaskMutation();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,11 +68,13 @@ const NewTask = () => {
 
   useEffect(() => {
     if (priorities.length > 0) {
-      const mediumPriority = priorities.find(priority => priority.name === "საშუალო");
+      const mediumPriority = priorities.find(
+        (priority) => priority.name === "საშუალო",
+      );
       if (mediumPriority) {
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
-          priority_id: mediumPriority.id.toString()
+          priority_id: mediumPriority.id.toString(),
         }));
       }
     }
@@ -86,8 +87,13 @@ const NewTask = () => {
   }, [document.getElementById("my_modal_7")?.checked]);
 
   const countWords = (text) => {
-    if (!text || text.trim() === '') return 0;
-    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+    if (!text || text.trim() === "") {
+      return 0;
+    }
+    return text
+      .trim()
+      .split(/\s+/)
+      .filter((word) => word.length > 0).length;
   };
 
   const handleChange = (e) => {
@@ -101,18 +107,18 @@ const NewTask = () => {
       const words = countWords(value);
       setWordCount(words);
 
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: value.trim() !== '' && words < 4,
+        [name]: value.trim() !== "" && words < 4,
       }));
     } else if (name === "title") {
       const hasError = fieldValidations[name]?.validate(value);
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
         [name]: hasError,
       }));
     } else {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
         [name]: validateRequiredField(value),
       }));
@@ -126,8 +132,6 @@ const NewTask = () => {
     }
   };
 
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -135,14 +139,20 @@ const NewTask = () => {
 
     newErrors.title = fieldValidations.title.validate(formData.title);
     const descriptionWords = countWords(formData.description);
-    newErrors.description = formData.description.trim() !== '' && descriptionWords < 4;
+    newErrors.description =
+      formData.description.trim() !== "" && descriptionWords < 4;
 
-    ["priority_id", "status_id", "department_id", "employee_id", "deadline"].forEach(key => {
+    [
+      "priority_id",
+      "status_id",
+      "department_id",
+      "employee_id",
+      "deadline",
+    ].forEach((key) => {
       newErrors[key] = validateRequiredField(formData[key]);
     });
 
     setErrors(newErrors);
-
 
     const hasErrors = Object.entries(newErrors).some(([key, error]) => {
       if (key === "title" || key === "description") {
@@ -166,7 +176,7 @@ const NewTask = () => {
         status_id: parseInt(formData.status_id),
         department_id: parseInt(formData.department_id),
         employee_id: parseInt(formData.employee_id),
-        due_date: formData.deadline
+        due_date: formData.deadline,
       };
 
       await createTaskMutation.mutateAsync(taskData);
@@ -180,13 +190,15 @@ const NewTask = () => {
         employee_id: "",
         deadline: getNextDayDate(),
       });
-      navigate('/');
+      navigate("/");
       if (priorities?.data?.length > 0) {
-        const mediumPriority = priorities.data.find(priority => priority.name === "საშუალო");
+        const mediumPriority = priorities.data.find(
+          (priority) => priority.name === "საშუალო",
+        );
         if (mediumPriority) {
-          setFormData(prev => ({
+          setFormData((prev) => ({
             ...prev,
-            priority_id: mediumPriority.id.toString()
+            priority_id: mediumPriority.id.toString(),
           }));
         }
       }
@@ -248,16 +260,12 @@ const NewTask = () => {
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className={`h-32 rounded__border ${errors.description ? "border-error" : ""}`}
+              className={`rounded__border h-32 ${errors.description ? "border-error" : ""}`}
             />
             {formData.description.length > 0 && (
               <div className="validation__wrapper">
                 <div
-                  className={`${
-                    wordCount < 4
-                      ? "text-error"
-                      : "text-success"
-                  }`}
+                  className={`${wordCount < 4 ? "text-error" : "text-success"}`}
                 >
                   √ მინიმუმ 4 სიტყვა (ამჟამად: {wordCount})
                 </div>
@@ -285,6 +293,7 @@ const NewTask = () => {
                 required={true}
                 placeholder="აირჩიეთ პრიორიტეტი"
                 errorMessage={errors.priority_id}
+                isPriority={true}
               />
             </div>
 
@@ -319,11 +328,7 @@ const NewTask = () => {
             </div>
 
             <div className="mb-4">
-              <label className="input__label">
-                პასუხისმგებელი თანამშრომელი
-                <span className="text-error">*</span>
-              </label>
-              <select
+              <SelectComponent
                 name="employee_id"
                 value={formData.employee_id}
                 onChange={(e) => {
@@ -333,23 +338,28 @@ const NewTask = () => {
                     handleChange(e);
                   }
                 }}
-                required
+                options={[
+                  ...(formData.department_id
+                    ? [
+                        {
+                          id: "new",
+                          name: "+ ახალი თანამშრომელი",
+                          isSpecial: true,
+                        },
+                      ]
+                    : []),
+                  ...filteredEmployees.map((emp) => ({
+                    ...emp,
+                    name: `${emp.name} ${emp.surname}`,
+                    icon: emp.avatar,
+                  })),
+                ]}
+                label="პასუხისმგებელი თანამშრომელი"
+                required={true}
+                placeholder="აირჩიეთ თანამშრომელი"
+                errorMessage={errors.employee_id}
                 disabled={!formData.department_id}
-                className={`rounded__border ${errors.employee_id ? "border-error" : ""} ${!formData.department_id ? "bg-gray-200" : ""}`}
-              >
-                <option value="">აირჩიეთ თანამშრომელი</option>
-                <option value="new" className="font-bold text-blue-600">+ ახალი თანამშრომელი</option>
-                {filteredEmployees.map((employee) => (
-                  <option key={employee.id} value={employee.id}>
-                    {employee.name} {employee.surname}
-                  </option>
-                ))}
-              </select>
-              {errors.employee_id && formData.department_id && (
-                <div className="text__error">
-                  {errors.employee_id}
-                </div>
-              )}
+              />
             </div>
           </div>
 
@@ -376,7 +386,7 @@ const NewTask = () => {
         <div className="col-span-2 mt-4 flex justify-end">
           <button
             type="submit"
-            className="cursor-pointer rounded-md bg-primary px-6 py-2 text-white"
+            className="bg-primary cursor-pointer rounded-md px-6 py-2 text-white"
             disabled={isSubmitting}
           >
             დავალების შენახვა

@@ -32,7 +32,7 @@ const TaskCard = ({ task }) => {
 
   return (
     <div
-      className={`cursor-pointer rounded-[15px] border ${
+      className={`cursor-pointer rounded-xl border ${
         task.status?.name === "დასაწყები"
           ? "border-[#F7BC30]"
           : task.status?.name === "პროგრესში"
@@ -45,7 +45,7 @@ const TaskCard = ({ task }) => {
       } h-[200px] flex flex-col justify-between p-2`}
       onClick={handleCardClick}
     >
-      <div className="flex items-center justify-between text-[12px]">
+      <div className="flex items-center justify-between text-[12px] p-1">
         <div className={"flex gap-[10px]"}>
           <div
             className={`flex items-center rounded-[4px] border p-[4px] font-semibold ${
@@ -88,7 +88,7 @@ const TaskCard = ({ task }) => {
             {truncateDescription(task.department?.name, 10)}
           </div>
         </div>
-        <span className="text-gray-500">
+        <span>
           {task.due_date
             ? format(new Date(task.due_date), "dd MMM, yyyy", {
                 locale: ka,

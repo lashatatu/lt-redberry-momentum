@@ -88,6 +88,20 @@ const NewTask = () => {
   }, [priorities]);
 
   useEffect(() => {
+    if (statuses.length > 0) {
+      const defaultStatus = statuses.find(
+        (status) => status.name === "დასაწყები"
+      );
+      if (defaultStatus) {
+        setFormData((prev) => ({
+          ...prev,
+          status_id: defaultStatus.id.toString(),
+        }));
+      }
+    }
+  }, [statuses]);
+
+  useEffect(() => {
     if (document.getElementById("my_modal_7")?.checked === false) {
       refetchEmployees();
     }

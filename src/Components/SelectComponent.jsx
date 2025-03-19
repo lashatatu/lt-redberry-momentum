@@ -93,7 +93,7 @@ const SelectComponent = ({
                 <span>{selectedOption?.name}</span>
               </>
             ) : (
-              <span className="text-gray-400">{placeholder}</span>
+              <span>{placeholder}</span>
             )}
           </div>
           <svg

@@ -12,6 +12,7 @@ import {
   validateRequiredField,
 } from "../utilities/validations";
 import SelectComponent from "./SelectComponent.jsx";
+import DateInput from "./DateInput.jsx";
 
 const STORAGE_KEY = "newTaskFormData";
 
@@ -29,15 +30,17 @@ const NewTask = () => {
 
   const [formData, setFormData] = useState(() => {
     const savedData = localStorage.getItem(STORAGE_KEY);
-    return savedData ? JSON.parse(savedData) : {
-      title: "",
-      description: "",
-      priority_id: "",
-      status_id: "",
-      department_id: "",
-      employee_id: "",
-      deadline: getNextDayDate(),
-    };
+    return savedData
+      ? JSON.parse(savedData)
+      : {
+          title: "",
+          description: "",
+          priority_id: "",
+          status_id: "",
+          department_id: "",
+          employee_id: "",
+          deadline: getNextDayDate(),
+        };
   });
 
   const [errors, setErrors] = useState({
@@ -375,22 +378,18 @@ const NewTask = () => {
           </div>
 
           <div className="mb-4">
-            <label className="input__label">
-              დედლაინი
-              <span className="text-error">*</span>
-            </label>
-            <input
-              type="date"
+            <div className="w-full max-w-xs">
+              <DateInput />
+            </div>
+{/*            <DateInput
               name="deadline"
               value={formData.deadline}
-              min={getNextDayDate()}
               onChange={handleChange}
-              required
-              className={`rounded__border ${errors.deadline ? "border-error" : ""}`}
-            />
-            {errors.deadline && (
-              <div className="text__error">{errors.deadline}</div>
-            )}
+              min={getNextDayDate()}
+              required={true}
+              label="დედლაინი"
+              errorMessage={errors.deadline}
+            />*/}
           </div>
         </div>
 

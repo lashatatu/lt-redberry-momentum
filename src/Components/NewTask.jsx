@@ -11,8 +11,9 @@ import {
   fieldValidations,
   validateRequiredField,
 } from "../utilities/validations";
-
 import SelectComponent from "./SelectComponent.jsx";
+
+const STORAGE_KEY = "newTaskFormData";
 
 const NewTask = () => {
   const navigate = useNavigate();
@@ -26,14 +27,17 @@ const NewTask = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [wordCount, setWordCount] = useState(0);
 
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    priority_id: "",
-    status_id: "",
-    department_id: "",
-    employee_id: "",
-    deadline: getNextDayDate(),
+  const [formData, setFormData] = useState(() => {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    return savedData ? JSON.parse(savedData) : {
+      title: "",
+      description: "",
+      priority_id: "",
+      status_id: "",
+      department_id: "",
+      employee_id: "",
+      deadline: getNextDayDate(),
+    };
   });
 
   const [errors, setErrors] = useState({
@@ -95,6 +99,10 @@ const NewTask = () => {
       .split(/\s+/)
       .filter((word) => word.length > 0).length;
   };
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+  }, [formData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -181,6 +189,8 @@ const NewTask = () => {
 
       await createTaskMutation.mutateAsync(taskData);
 
+      localStorage.removeItem(STORAGE_KEY);
+
       setFormData({
         title: "",
         description: "",
@@ -190,6 +200,7 @@ const NewTask = () => {
         employee_id: "",
         deadline: getNextDayDate(),
       });
+
       navigate("/");
       if (priorities?.data?.length > 0) {
         const mediumPriority = priorities.data.find(
